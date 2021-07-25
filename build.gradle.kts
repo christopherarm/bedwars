@@ -20,14 +20,19 @@ repositories {
     maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
         name = "GitLab"
-        credentials(HttpHeaderCredentials::class) {
-            name = "Job-Token"
-            value = System.getenv("CI_JOB_TOKEN")
+
+        if (System.getenv("CI_JOB_TOKEN") == null) {
+            credentials(HttpHeaderCredentials::class) {
+                name = "Private-Token"
+                value = property("gitlabToken") as String
+            }
+        } else {
+            credentials(HttpHeaderCredentials::class) {
+                name = "Job-Token"
+                value = System.getenv("CI_JOB_TOKEN")
+            }
         }
-        credentials(HttpHeaderCredentials::class) {
-            name = "Private-Token"
-            value = property("gitlabToken") as String
-        }
+
         authentication {
             create<HttpHeaderAuthentication>("header")
         }
