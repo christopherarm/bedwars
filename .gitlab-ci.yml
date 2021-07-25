@@ -16,10 +16,6 @@ stages:
 build:
   stage: build
   script:
-    - 'gradle build'
-  except:
-    - master
-    - dev
   cache:
     - key: "$CI_COMMIT_REF_SLUG"
       paths:
@@ -42,6 +38,12 @@ jar:
     paths:
       - build
 publish:
+  needs:
+    - job: build
+  cache:
+    - key: "$CI_COMMIT_REF_SLUG"
+      paths:
+        - build
   stage: publish
   script:
     - 'gradle publish'
