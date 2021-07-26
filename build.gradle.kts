@@ -14,9 +14,15 @@ version = "1.0.0-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
+
+    maven {
+        url = uri("https://libraries.minecraft.net/")
+    }
+
     maven {
         url = uri("https://papermc.io/repo/repository/maven-public/")
     }
+
     maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
         name = "GitLab"
@@ -42,9 +48,10 @@ repositories {
 
 dependencies {
 
-    compileOnly("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
-    compileOnly("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
-
+    implementation("com.mojang:authlib:1.5.21")
+    implementation("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT")
+    implementation("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
+    implementation("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
