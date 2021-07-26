@@ -5,6 +5,8 @@ import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
 import net.trainingsoase.api.i18n.ILanguageProvider;
 import net.trainingsoase.api.spigot.i18n.BukkitSender;
+import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
+import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
 import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
@@ -67,12 +69,19 @@ public class Bedwars extends Game {
         linearPhaseSeries.add(new IngamePhase(this, true));
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
+        registerListeners();
 
         languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
+
     }
 
     @Override
     public void onDisable() {
 
+    }
+
+    private void registerListeners() {
+        new PlayerJoinHandler(this, linearPhaseSeries);
+        new PlayerQuitHandler(this, linearPhaseSeries);
     }
 }

@@ -48,10 +48,10 @@ repositories {
 
 dependencies {
 
-    implementation("com.mojang:authlib:1.5.21")
-    implementation("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT")
-    implementation("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
-    implementation("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
+    compileOnlyApi("com.mojang:authlib:1.5.21")
+    compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT")
+    compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -91,6 +91,7 @@ bukkit {
     name = "Bedwars"
     main = "net.trainingsoase.bedwars.Bedwars"
     author = "TrainingsOase"
+    depend = listOf("OaseAPI","Hopjes", "Oreo")
 
 }
 java {

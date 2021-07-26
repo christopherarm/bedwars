@@ -1,4 +1,4 @@
-﻿package net.trainingsoase.bedwars.phase;
+package net.trainingsoase.bedwars.phase;
 
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
