@@ -1,5 +1,3 @@
 include:
   - project: 'trainingsoase-net/ci'
-    file: '.gradle-gitlab-ci.yml'
-  - project: 'trainingsoase-net/ci'
     file: '.gradle-docs.yml'
