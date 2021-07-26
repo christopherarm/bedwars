@@ -41,10 +41,13 @@ repositories {
 }
 
 dependencies {
+    implementation("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT") {
+        exclude("net.trainingsoase","oase-data-impl")
+    }
+    implementation("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
+    implementation("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT") {
 
-    compileOnly("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
-    compileOnly("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
-    compileOnly("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT")
+    }
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
