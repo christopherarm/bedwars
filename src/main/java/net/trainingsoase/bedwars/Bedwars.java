@@ -5,8 +5,13 @@ import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
 import net.trainingsoase.api.i18n.ILanguageProvider;
 import net.trainingsoase.api.spigot.i18n.BukkitSender;
+import net.trainingsoase.bedwars.phase.EndingPhase;
+import net.trainingsoase.bedwars.phase.IngamePhase;
+import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
+import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
+import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +29,8 @@ public class Bedwars extends Game {
     public Bedwars() {
         super(false, 0);
     }
+
+    private LinearPhaseSeries<TimedPhase> linearPhaseSeries;
 
     private ILanguageProvider<CommandSender> languageProvider;
 
@@ -55,6 +62,12 @@ public class Bedwars extends Game {
 
     @Override
     public void onEnable() {
+        linearPhaseSeries = new LinearPhaseSeries<>();
+        linearPhaseSeries.add(new LobbyPhase(this, true));
+        linearPhaseSeries.add(new IngamePhase(this, true));
+        linearPhaseSeries.add(new EndingPhase(this, true));
+        linearPhaseSeries.start();
+
         languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
     }
 
