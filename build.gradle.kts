@@ -41,6 +41,8 @@ repositories {
 }
 
 dependencies {
+
+    implementation("com.mojang:authlib:1.5.21")
     implementation("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT")
     implementation("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
     implementation("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
