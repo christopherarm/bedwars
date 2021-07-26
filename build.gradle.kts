@@ -14,9 +14,15 @@ version = "1.0.0-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
+
+    maven {
+        url = uri("https://libraries.minecraft.net/")
+    }
+
     maven {
         url = uri("https://papermc.io/repo/repository/maven-public/")
     }
+
     maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
         name = "GitLab"
