@@ -1,4 +1,4 @@
-﻿package net.trainingsoase.bedwars;
+package net.trainingsoase.bedwars;
 
 import net.trainingsoase.api.database.AbstractSentryConnector;
 import net.trainingsoase.api.database.sentry.Environment;
