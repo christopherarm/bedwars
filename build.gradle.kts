@@ -11,9 +11,10 @@ plugins {
 group = "net.trainingsoase"
 version = "1.0.0-SNAPSHOT"
 
+val CN_VERSION = "3.4.0-RELEASE";
+
 repositories {
     mavenCentral()
-    mavenLocal()
 
     maven {
         url = uri("https://libraries.minecraft.net/")
@@ -50,16 +51,16 @@ repositories {
 }
 
 dependencies {
-    val CN_VERSION = "3.4.0-RELEASE";
 
     compileOnlyApi("com.mojang:authlib:1.5.21")
     compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT")
     compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
+    compileOnlyApi("net.trainingsoase:Oreo:1.0.0-SNAPSHOT")
 
-    compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:${CN_VERSION}")
-    compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:${CN_VERSION}")
-    compileOnlyApi("de.dytanic.cloudnet:cloudnet-bridge:${CN_VERSION}")
+    compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
+    compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")
+    compileOnlyApi("de.dytanic.cloudnet:cloudnet-bridge:$CN_VERSION")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
