@@ -5,7 +5,6 @@ plugins {
     id("com.github.johnrengelman.shadow") version "4.0.4"
     `maven-publish`
     `java-library`
-
 }
 
 group = "net.trainingsoase"
@@ -16,17 +15,17 @@ val CN_VERSION = "3.4.0-RELEASE";
 repositories {
     mavenCentral()
 
-    maven {
-        url = uri("https://libraries.minecraft.net/")
-    }
+    maven("https://libraries.minecraft.net/")
 
-    maven {
-        url = uri("https://papermc.io/repo/repository/maven-public/")
-    }
+    maven("https://repo.cloudnetservice.eu/repository/releases/")
 
-    maven {
-        url = uri("https://repo.cloudnetservice.eu/repository/releases/")
-    }
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
+
+    maven("https://oss.sonatype.org/content/groups/public/")
+
+    maven("https://repo.aikar.co/content/groups/aikar/")
+
+    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
 
     maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
@@ -49,14 +48,18 @@ repositories {
         }
     }
 }
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor(0, TimeUnit.MILLISECONDS)
+}
 
 dependencies {
 
     compileOnlyApi("com.mojang:authlib:1.5.21")
-    compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-SNAPSHOT")
+    compileOnlyApi("net.trainingsoase:Hopjes:1.0.+")
     compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
-    compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-SNAPSHOT")
-    compileOnlyApi("net.trainingsoase:Oreo:1.0.0-SNAPSHOT")
+    compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.+")
+    compileOnlyApi("net.trainingsoase:Oreo:1.0.+")
+    compileOnlyApi("co.aikar:taskchain-bukkit:3.7.2")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")
@@ -103,10 +106,12 @@ bukkit {
     depend = listOf("OaseAPI","Hopjes", "Oreo", "CloudNet-Bridge")
 
 }
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 }
+
 tasks {
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         // archiveBaseName.set("shadow")
@@ -115,4 +120,8 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
 }
