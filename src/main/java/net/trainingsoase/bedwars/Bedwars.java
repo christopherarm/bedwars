@@ -3,8 +3,6 @@ package net.trainingsoase.bedwars;
 import net.trainingsoase.api.database.AbstractSentryConnector;
 import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
-import net.trainingsoase.api.i18n.ILanguageProvider;
-import net.trainingsoase.api.spigot.i18n.BukkitSender;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
 import net.trainingsoase.bedwars.phase.EndingPhase;
@@ -14,6 +12,7 @@ import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
+import net.trainingsoase.spigot.i18n.BukkitSender;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
