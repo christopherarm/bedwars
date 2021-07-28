@@ -1,5 +1,6 @@
 package net.trainingsoase.bedwars.listener.player;
 
+import at.rxcki.strigiformes.message.MessageCache;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
@@ -37,11 +38,13 @@ public class PlayerQuitHandler implements Listener {
             var lobbyPhase = (LobbyPhase) phaseSeries.getCurrentPhase();
             lobbyPhase.checkStopCondition();
 
+            var cache = new MessageCache(bedwars.getLanguageProvider(), "quit_message",
+                    player.getDisplayName(),
+                    Bukkit.getOnlinePlayers().size() - 1,
+                    bedwars.getMode().getPlayers());
+
             for (IOasePlayer iOasePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
-                bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, "quit_message",
-                        player.getDisplayName(),
-                        Bukkit.getOnlinePlayers().size() - 1,
-                        bedwars.getMode().getPlayers());
+                bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, cache.getMessage(iOasePlayer.getLocale()));
             }
             return;
         }

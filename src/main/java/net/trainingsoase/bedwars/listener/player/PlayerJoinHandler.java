@@ -64,11 +64,13 @@ public class PlayerJoinHandler implements Listener {
             var lobbyPhase = (LobbyPhase) phaseSeries.getCurrentPhase();
             lobbyPhase.checkStartCondition();
 
+            var cache = new MessageCache(bedwars.getLanguageProvider(), "join_message",
+                    player.getDisplayName(),
+                    Bukkit.getOnlinePlayers().size(),
+                    bedwars.getMode().getPlayers());
+
             for (IOasePlayer iOasePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
-                bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, "join_message",
-                        player.getDisplayName(),
-                        Bukkit.getOnlinePlayers().size(),
-                        bedwars.getMode().getPlayers());
+                bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, cache.getMessage(iOasePlayer.getLocale()));
             }
 
             setupPlayer(player);
