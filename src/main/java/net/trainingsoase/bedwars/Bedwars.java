@@ -1,5 +1,6 @@
 package net.trainingsoase.bedwars;
 
+import at.rxcki.strigiformes.color.ColorRegistry;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.trainingsoase.api.database.AbstractSentryConnector;
@@ -81,6 +82,7 @@ public class Bedwars extends Game {
 
         registerListeners();
 
+        ColorRegistry.useLegacyColors = true;
         languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
 
         setupGame();
