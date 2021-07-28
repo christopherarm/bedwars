@@ -55,26 +55,33 @@ public class LobbyPhase extends TimedPhase {
             onlinePlayer.setLevel(getCurrentTicks());
         }
 
-        if(getCurrentTicks() == 30) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage("30");
-            }
-        } else if(getCurrentTicks() == 15) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage("15");
-            }
-        } else if(getCurrentTicks() == 10) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage("10");
-            }
-        } else if(getCurrentTicks() <= 5 && getCurrentTicks() >= 1) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage(getCurrentTicks() + "");
-            }
-        } else if(getCurrentTicks() == 0) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage("START");
-            }
+        switch (getCurrentTicks()) {
+            case 30:
+                // 30 Sekunden
+                break;
+
+            case 15:
+                // 15 Sekunden
+                break;
+
+            case 10:
+                // 10 Sekunden
+                break;
+
+            case 5:
+            case 4:
+            case 3:
+            case 2:
+            case 1:
+                // <= 5 Sekunden
+                break;
+
+            case 0:
+                // Spiel starten
+                break;
+
+            default:
+                break;
         }
     }
 }
