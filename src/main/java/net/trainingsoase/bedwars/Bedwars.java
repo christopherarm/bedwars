@@ -34,7 +34,7 @@ public class Bedwars extends Game {
 
     private LinearPhaseSeries<TimedPhase> linearPhaseSeries;
 
-    private ILanguageProvider<CommandSender> languageProvider;
+    private LanguageProvider<CommandSender> languageProvider;
 
     @Override
     public void onLoad() {
@@ -83,5 +83,9 @@ public class Bedwars extends Game {
     private void registerListeners() {
         new PlayerJoinHandler(this, linearPhaseSeries);
         new PlayerQuitHandler(this, linearPhaseSeries);
+    }
+
+    public LanguageProvider<CommandSender> getLanguageProvider() {
+        return languageProvider;
     }
 }

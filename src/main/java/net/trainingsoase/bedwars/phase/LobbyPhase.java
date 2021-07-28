@@ -19,20 +19,23 @@ public class LobbyPhase extends TimedPhase {
     public LobbyPhase(Game game, boolean async) {
         super("Lobby", game, 20, async);
         this.setPaused(true);
-        this.setCurrentTicks(60);
+        this.setCurrentTicks(61);
     }
 
     public void checkStartCondition() {
         if(Bukkit.getOnlinePlayers().size() >= MIN_PLAYERS && isPaused()) {
             setPaused(false);
-            Bukkit.broadcastMessage("active");
         }
     }
 
     public void checkStopCondition() {
-        if(Bukkit.getOnlinePlayers().size() < MIN_PLAYERS && !isPaused()) {
+        if((Bukkit.getOnlinePlayers().size() - 1) < MIN_PLAYERS && !isPaused()) {
             setPaused(true);
             setCurrentTicks(61);
+
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                onlinePlayer.setLevel(60);
+            }
         }
     }
 
@@ -50,6 +53,28 @@ public class LobbyPhase extends TimedPhase {
     protected void onTick() {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setLevel(getCurrentTicks());
+        }
+
+        if(getCurrentTicks() == 30) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                onlinePlayer.sendMessage("30");
+            }
+        } else if(getCurrentTicks() == 15) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                onlinePlayer.sendMessage("15");
+            }
+        } else if(getCurrentTicks() == 10) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                onlinePlayer.sendMessage("10");
+            }
+        } else if(getCurrentTicks() <= 5 && getCurrentTicks() >= 1) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                onlinePlayer.sendMessage(getCurrentTicks() + "");
+            }
+        } else if(getCurrentTicks() == 0) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                onlinePlayer.sendMessage("START");
+            }
         }
     }
 }
