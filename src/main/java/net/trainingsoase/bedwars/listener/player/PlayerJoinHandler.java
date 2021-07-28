@@ -29,7 +29,6 @@ public class PlayerJoinHandler implements Listener {
     public PlayerJoinHandler(Bedwars bedwars, LinearPhaseSeries<TimedPhase> phaseSeries) {
         this.bedwars = bedwars;
         this.phaseSeries = phaseSeries;
-        bedwars.getServer().getPluginManager().registerEvents(this, bedwars);
     }
 
     @EventHandler

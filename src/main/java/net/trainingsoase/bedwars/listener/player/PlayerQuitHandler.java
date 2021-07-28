@@ -20,7 +20,6 @@ public class PlayerQuitHandler implements Listener {
     private final LinearPhaseSeries<TimedPhase> phaseSeries;
 
     public PlayerQuitHandler(Bedwars bedwars, LinearPhaseSeries<TimedPhase> phaseSeries) {
-        bedwars.getServer().getPluginManager().registerEvents(this, bedwars);
         this.phaseSeries = phaseSeries;
     }
 

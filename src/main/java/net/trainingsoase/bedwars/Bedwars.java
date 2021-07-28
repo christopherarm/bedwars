@@ -80,8 +80,8 @@ public class Bedwars extends Game {
     }
 
     private void registerListeners() {
-        new PlayerJoinHandler(this, linearPhaseSeries);
-        new PlayerQuitHandler(this, linearPhaseSeries);
+        getServer().getPluginManager().registerEvents(new PlayerJoinHandler(this, linearPhaseSeries), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitHandler(this, linearPhaseSeries), this);
     }
 
     public LanguageProvider<CommandSender> getLanguageProvider() {
