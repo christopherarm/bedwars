@@ -1,4 +1,4 @@
-﻿package net.trainingsoase.bedwars.utils;
+package net.trainingsoase.bedwars.utils;
 
 /**
  * @author byCrypex
