@@ -16,11 +16,14 @@ import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.spigot.i18n.BukkitSender;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author byCrypex
@@ -88,7 +91,14 @@ public class Bedwars extends Game {
 
     private void setupGame() {
         // Instanziert den Modus mit den ersten 5 Zeichen des Servers (BW2x1, etc.)
-        this.mode = Mode.valueOf(Wrapper.getInstance().getCurrentServiceInfoSnapshot().getName().substring(0,5));
+        var serverName = Wrapper.getInstance().getCurrentServiceInfoSnapshot().getName().substring(0,5);
+
+        if(serverName.startsWith("BW")) {
+            this.mode = Mode.valueOf(serverName);
+        } else {
+            this.getLogger().log(Level.SEVERE, "Das Plugin muss sich auf einem Bedwars Server befinden, der nach dem folgenden Syntax aufgebaut ist: BW-*");
+            Bukkit.shutdown();
+        }
 
         BridgeServerHelper.setMotd("Voting");
         BridgeServerHelper.setMaxPlayers(mode.getPlayers());
