@@ -14,14 +14,11 @@ val CN_VERSION = "3.4.0-RELEASE";
 
 repositories {
     mavenCentral()
+    mavenLocal()
 
     maven("https://libraries.minecraft.net/")
 
     maven("https://repo.cloudnetservice.eu/repository/releases/")
-
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
-
-    maven("https://oss.sonatype.org/content/groups/public/")
 
     maven("https://repo.aikar.co/content/groups/aikar/")
 
