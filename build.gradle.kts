@@ -99,7 +99,7 @@ bukkit {
     name = "Bedwars"
     main = "net.trainingsoase.bedwars.Bedwars"
     author = "TrainingsOase"
-    depend = listOf("OaseAPI","Hopjes", "Oreo")
+    depend = listOf("OaseAPI","Hopjes", "Oreo", "CloudNet-Bridge")
 
 }
 java {
