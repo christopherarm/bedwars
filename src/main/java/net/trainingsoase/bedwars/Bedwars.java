@@ -7,6 +7,8 @@ import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
+import net.trainingsoase.bedwars.listener.player.PlayerSpawnLocationHandler;
+import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
@@ -103,11 +105,14 @@ public class Bedwars extends Game {
         BridgeServerHelper.setMotd("Voting");
         BridgeServerHelper.setMaxPlayers(mode.getPlayers());
         BridgeServerHelper.updateServiceInfo();
+
+        MapHelper.getInstance().loadLobby();
     }
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerJoinHandler(this, linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitHandler(this, linearPhaseSeries), this);
+        getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(), this);
     }
 
     public LanguageProvider<CommandSender> getLanguageProvider() {
