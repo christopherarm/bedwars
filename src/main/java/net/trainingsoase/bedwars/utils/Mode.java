@@ -15,11 +15,11 @@ public enum Mode {
     BW8x1("8x1", 2,8, 8, 4),
     BW8x2("8x2", 2,16, 8, 8);
 
-    String mode;
-    int id;
-    int players;
-    int teams;
-    int startSize;
+    private String mode;
+    private int id;
+    private int players;
+    private int teams;
+    private int startSize;
 
     public static final Mode[] VALUES = values();
 
