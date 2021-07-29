@@ -2,6 +2,7 @@ package net.trainingsoase.bedwars.listener.player;
 
 import at.rxcki.strigiformes.message.MessageCache;
 import net.trainingsoase.api.player.IOasePlayer;
+import net.trainingsoase.api.player.IPlayerExecutor;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.item.JoinItems;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import static net.trainingsoase.oreo.scoreboard.ScoreboardAPI.INSTANCE;
 
@@ -35,6 +37,7 @@ public class PlayerJoinHandler implements Listener {
     private final HashMap<String, Integer> sidebar = new HashMap<>();
 
     private final JoinItems joinItems;
+    private final IPlayerExecutor<UUID, IOasePlayer> playerExecutor;
 
     public PlayerJoinHandler(Bedwars bedwars, LinearPhaseSeries<TimedPhase> phaseSeries) {
         this.bedwars = bedwars;
@@ -55,6 +58,7 @@ public class PlayerJoinHandler implements Listener {
         sidebar.put("§a■ §7Ranking:", 2);
         sidebar.put(" §8➥ §a", 1);
         sidebar.put("         ", 0);
+        this.playerExecutor =  OaseAPIImpl.INSTANCE.getPlayerExecutor();
     }
 
     @EventHandler
@@ -72,7 +76,8 @@ public class PlayerJoinHandler implements Listener {
                     Bukkit.getOnlinePlayers().size(),
                     bedwars.getMode().getPlayers());
 
-            for (IOasePlayer iOasePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
+
+            for (IOasePlayer iOasePlayer : this.playerExecutor.getCurrentOnlinePlayers()) {
                 bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, cache.getMessage(iOasePlayer.getLocale()));
             }
 
@@ -124,7 +129,7 @@ public class PlayerJoinHandler implements Listener {
             var oneCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_one");
 
             if(onlinePlayers < startSize) {
-                for (IOasePlayer iOasePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
+                for (IOasePlayer iOasePlayer : this.playerExecutor.getCurrentOnlinePlayers()) {
                     if (sizeNeeded == 1) {
                         bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, oneCache.getMessage(iOasePlayer.getLocale()));
                         return;

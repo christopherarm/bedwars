@@ -1,5 +1,6 @@
 package net.trainingsoase.bedwars.phase;
 
+import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import org.bukkit.Bukkit;
@@ -13,25 +14,23 @@ import org.bukkit.entity.Player;
 
 public class LobbyPhase extends TimedPhase {
 
-    private static final int MIN_PLAYERS = 2;
-    private static final int MAX_PLAYERS = 2;
+    private final Bedwars bedwars;
 
-    public LobbyPhase(Game game, boolean async) {
+    public LobbyPhase(Bedwars bedwars, Game game, boolean async) {
         super("Lobby", game, 20, async);
+        this.bedwars = bedwars;
         this.setPaused(true);
         this.setCurrentTicks(61);
     }
 
-    public boolean checkStartCondition() {
-        if(Bukkit.getOnlinePlayers().size() >= MIN_PLAYERS && isPaused()) {
+    public void checkStartCondition() {
+        if(Bukkit.getOnlinePlayers().size() >= bedwars.getMode().getStartSize() && isPaused()) {
             setPaused(false);
-            return true;
         }
-        return false;
     }
 
     public void checkStopCondition() {
-        if((Bukkit.getOnlinePlayers().size() - 1) < MIN_PLAYERS && !isPaused()) {
+        if((Bukkit.getOnlinePlayers().size() - 1) < bedwars.getMode().getStartSize() && !isPaused()) {
             setPaused(true);
             setCurrentTicks(61);
 
