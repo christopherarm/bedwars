@@ -1,13 +1,9 @@
 package net.trainingsoase.bedwars.inventory;
 
-import at.rxcki.strigiformes.MessageProvider;
-import at.rxcki.strigiformes.message.MessageCache;
-import at.rxcki.strigiformes.text.TextData;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.data.OaseAPIImpl;
-import net.trainingsoase.hopjes.api.ColorData;
 import net.trainingsoase.oreo.inventory.InventoryLayout;
 import net.trainingsoase.oreo.inventory.InventoryRows;
 import net.trainingsoase.oreo.inventory.translated.GlobalTranslatedInventoryBuilder;
@@ -24,7 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Locale;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
