@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import java.util.HashMap;
@@ -37,7 +38,10 @@ public class PlayerJoinHandler implements Listener {
     private final HashMap<String, Integer> sidebar = new HashMap<>();
 
     private final JoinItems joinItems;
+
     private final IPlayerExecutor<UUID, IOasePlayer> playerExecutor;
+
+    private BukkitTask bukkitTask;
 
     public PlayerJoinHandler(Bedwars bedwars, LinearPhaseSeries<TimedPhase> phaseSeries) {
         this.bedwars = bedwars;
@@ -58,6 +62,7 @@ public class PlayerJoinHandler implements Listener {
         sidebar.put("§a■ §7Ranking:", 2);
         sidebar.put(" §8➥ §a", 1);
         sidebar.put("         ", 0);
+
         this.playerExecutor =  OaseAPIImpl.INSTANCE.getPlayerExecutor();
     }
 
@@ -102,7 +107,7 @@ public class PlayerJoinHandler implements Listener {
     }
 
     private void setupScoreboard(Player player, IOasePlayer oasePlayer) {
-        INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§c§lBedwars §8§l︳§eLobby", sidebar);
+        INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§c§lBedwars §8§l︳ §eLobby", sidebar);
         INSTANCE.updateTeam(player, "Team", " §8➥ §7", "", "§4✖");
         INSTANCE.updateTeam(player, "PreTeam", "§7", "§7■ Team:", "");
         INSTANCE.updateTeam(player, "Coins", " §8➥ §e", "§e", "" + oasePlayer.getCoins());
@@ -120,23 +125,25 @@ public class PlayerJoinHandler implements Listener {
     }
 
     private void sendCountDownBar() {
-        bedwars.runTaskTimer(() -> {
-            int startSize = bedwars.getMode().getStartSize();
-            int onlinePlayers = Bukkit.getOnlinePlayers().size();
-            int sizeNeeded = startSize - onlinePlayers;
+        if(bukkitTask == null) {
+            bukkitTask = bedwars.runTaskTimer(() -> {
+                int startSize = bedwars.getMode().getStartSize();
+                int onlinePlayers = Bukkit.getOnlinePlayers().size();
+                int sizeNeeded = startSize - onlinePlayers;
 
-            var moreCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_more", sizeNeeded);
-            var oneCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_one");
+                var moreCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_more", sizeNeeded);
+                var oneCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_one");
 
-            if(onlinePlayers < startSize) {
-                for (IOasePlayer iOasePlayer : this.playerExecutor.getCurrentOnlinePlayers()) {
-                    if (sizeNeeded == 1) {
-                        bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, oneCache.getMessage(iOasePlayer.getLocale()));
-                        return;
+                if(onlinePlayers < startSize) {
+                    for (IOasePlayer iOasePlayer : this.playerExecutor.getCurrentOnlinePlayers()) {
+                        if (sizeNeeded == 1) {
+                            bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, oneCache.getMessage(iOasePlayer.getLocale()));
+                        } else {
+                            bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, moreCache.getMessage(iOasePlayer.getLocale()));
+                        }
                     }
-                    bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, moreCache.getMessage(iOasePlayer.getLocale()));
                 }
-            }
-        }, 0, 40);
+            }, 0, 40);
+        }
     }
 }

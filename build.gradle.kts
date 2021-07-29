@@ -62,7 +62,7 @@ dependencies {
     compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.+")
     compileOnlyApi("net.trainingsoase:Oreo:1.0.+")
-    compileOnlyApi("co.aikar:taskchain-bukkit:3.7.2")
+    implementation("co.aikar:taskchain-bukkit:3.7.2")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")

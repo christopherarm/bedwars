@@ -1,10 +1,17 @@
 package net.trainingsoase.bedwars.phase;
 
+import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
+import net.trainingsoase.bedwars.inventory.InventoryService;
+import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * @author byCrypex
@@ -12,7 +19,7 @@ import org.bukkit.entity.Player;
  * @since
  **/
 
-public class LobbyPhase extends TimedPhase {
+public class LobbyPhase extends TimedPhase implements Listener {
 
     private final Bedwars bedwars;
 
@@ -21,6 +28,7 @@ public class LobbyPhase extends TimedPhase {
         this.bedwars = bedwars;
         this.setPaused(true);
         this.setCurrentTicks(61);
+        this.addPhaseListener(this);
     }
 
     public void checkStartCondition() {
@@ -83,6 +91,20 @@ public class LobbyPhase extends TimedPhase {
 
             default:
                 break;
+        }
+    }
+
+    @EventHandler
+    public void handleInteract(final PlayerInteractEvent event) {
+        final Player player = event.getPlayer();
+        final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
+
+        if(event.getItem() == null) return;
+        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
+        if(event.getItem().getItemMeta().getDisplayName().equals(
+                bedwars.getLanguageProvider().getTextProvider().getString("item_teamselector", oasePlayer.getLocale()))) {
+            player.openInventory(InventoryService.getInstance(bedwars).getTeamselector().getTeamSelectorInventory(oasePlayer.getLocale()));
         }
     }
 }
