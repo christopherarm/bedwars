@@ -17,8 +17,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class JoinItems {
 
-    private static JoinItems instance;
-
     private final TranslatedObjectCache<ItemStack> teamSelectionItem;
     private final TranslatedObjectCache<ItemStack> votingItem;
     private final TranslatedObjectCache<ItemStack> guardianItem;
@@ -26,8 +24,6 @@ public class JoinItems {
     private final TranslatedObjectCache<ItemStack> lobbyItem;
 
     public JoinItems(LanguageProvider<CommandSender> languageProvider) {
-        instance = this;
-
         this.teamSelectionItem = new TranslatedObjectCache<>(locale -> new SkullBuilder(SkullBuilder.SkullType.PLAYER)
                 .setSkinOverValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThkYWExZTNlZDk0ZmYzZTMzZTFkNGM2ZTQzZjAyNGM0N2Q3OGE1N2JhNGQzOGU3NWU3YzkyNjQxMDYifX19")
                 .setDisplayName(languageProvider.getTextProvider().getString("item_teamselector", locale))
@@ -72,12 +68,5 @@ public class JoinItems {
 
     public TranslatedObjectCache<ItemStack> getLobbyItem() {
         return lobbyItem;
-    }
-
-    public static synchronized JoinItems getInstance(LanguageProvider<CommandSender> languageProvider) {
-        if(instance == null) {
-            new JoinItems(languageProvider);
-        }
-        return instance;
     }
 }
