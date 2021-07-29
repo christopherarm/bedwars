@@ -15,13 +15,21 @@ val CN_VERSION = "3.4.0-RELEASE";
 repositories {
     mavenCentral()
 
-    maven("https://libraries.minecraft.net/")
+    maven {
+        url = uri("https://libraries.minecraft.net/")
+    }
 
-    maven("https://repo.cloudnetservice.eu/repository/releases/")
+    maven {
+        url = uri("https://repo.cloudnetservice.eu/repository/releases/")
+    }
 
-    maven("https://repo.aikar.co/content/groups/aikar/")
+    maven {
+        url = uri("https://repo.aikar.co/content/groups/aikar/")
+    }
 
-    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
+    maven {
+        url = uri("https://hub.spigotmc.org/nexus/content/groups/public/")
+    }
 
     maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
