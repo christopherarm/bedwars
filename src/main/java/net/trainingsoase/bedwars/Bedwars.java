@@ -80,11 +80,10 @@ public class Bedwars extends Game {
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
 
-        registerListeners();
-
         ColorRegistry.useLegacyColors = true;
         languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
 
+        registerListeners();
         setupGame();
     }
 

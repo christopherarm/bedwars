@@ -14,7 +14,6 @@ val CN_VERSION = "3.4.0-RELEASE";
 
 repositories {
     mavenCentral()
-    mavenLocal()
 
     maven("https://libraries.minecraft.net/")
 

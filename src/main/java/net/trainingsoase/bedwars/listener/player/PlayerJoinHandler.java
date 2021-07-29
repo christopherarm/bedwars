@@ -3,12 +3,11 @@ package net.trainingsoase.bedwars.listener.player;
 import at.rxcki.strigiformes.message.MessageCache;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
+import net.trainingsoase.bedwars.item.JoinItems;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.data.OaseAPIImpl;
-import net.trainingsoase.data.model.OasePlayer;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
-import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -35,9 +34,13 @@ public class PlayerJoinHandler implements Listener {
 
     private final HashMap<String, Integer> sidebar = new HashMap<>();
 
+    private final JoinItems joinItems;
+
     public PlayerJoinHandler(Bedwars bedwars, LinearPhaseSeries<TimedPhase> phaseSeries) {
         this.bedwars = bedwars;
         this.phaseSeries = phaseSeries;
+
+        joinItems = JoinItems.getInstance(bedwars.getLanguageProvider());
 
         sidebar.put("§8§m----------------", 12);
         sidebar.put("§7", 11);
@@ -75,6 +78,7 @@ public class PlayerJoinHandler implements Listener {
 
             setupPlayer(player);
             setupScoreboard(player, oasePlayer);
+            setupJoinItems(player, oasePlayer);
         }
     }
 
@@ -99,5 +103,14 @@ public class PlayerJoinHandler implements Listener {
         INSTANCE.updateTeam(player, "Ranking", " §8➥ §a", "§a", "#1");
         INSTANCE.updateTeam(player, "Map", " §8➥ §b", "§b", "§bTest");
 
+    }
+
+    private void setupJoinItems(Player player, IOasePlayer oasePlayer) {
+
+        player.getInventory().setItem(0, joinItems.getTeamSelectionItem().get(oasePlayer.getLocale()));
+        player.getInventory().setItem(2, joinItems.getVotingItem().get(oasePlayer.getLocale()));
+        player.getInventory().setItem(4, joinItems.getGuardianItem().get(oasePlayer.getLocale()));
+        player.getInventory().setItem(6, joinItems.getMapVotingItem().get(oasePlayer.getLocale()));
+        player.getInventory().setItem(8, joinItems.getLobbyItem().get(oasePlayer.getLocale()));
     }
 }
