@@ -1,6 +1,5 @@
 plugins {
     java
-    maven
     id("net.minecrell.plugin-yml.bukkit") version "0.4.0"
     id("com.github.johnrengelman.shadow") version "4.0.4"
     `maven-publish`
