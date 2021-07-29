@@ -1,5 +1,6 @@
 package net.trainingsoase.bedwars;
 
+import at.rxcki.strigiformes.color.ColorRegistry;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.trainingsoase.api.database.AbstractSentryConnector;
@@ -7,21 +8,28 @@ import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
+import net.trainingsoase.bedwars.listener.player.PlayerSpawnLocationHandler;
+import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
+import net.trainingsoase.bedwars.team.BedwarsTeam;
+import net.trainingsoase.bedwars.team.Teams;
 import net.trainingsoase.bedwars.utils.Mode;
 import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
+import net.trainingsoase.hopjes.api.teams.TeamService;
 import net.trainingsoase.spigot.i18n.BukkitSender;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +48,8 @@ public class Bedwars extends Game {
     private Mode mode;
 
     private LinearPhaseSeries<TimedPhase> linearPhaseSeries;
+
+    private TeamService<BedwarsTeam> teamService;
 
     private LanguageProvider<CommandSender> languageProvider;
 
@@ -71,17 +81,18 @@ public class Bedwars extends Game {
 
     @Override
     public void onEnable() {
+        ColorRegistry.useLegacyColors = true;
+        languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
+
         linearPhaseSeries = new LinearPhaseSeries<>();
-        linearPhaseSeries.add(new LobbyPhase(this, true));
+        linearPhaseSeries.add(new LobbyPhase(this, this, true));
         linearPhaseSeries.add(new IngamePhase(this, true));
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
 
         registerListeners();
-
-        languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
-
         setupGame();
+        createTeams();
     }
 
     @Override
@@ -103,12 +114,42 @@ public class Bedwars extends Game {
         BridgeServerHelper.setMotd("Voting");
         BridgeServerHelper.setMaxPlayers(mode.getPlayers());
         BridgeServerHelper.updateServiceInfo();
+
+        MapHelper.getInstance().loadLobby();
     }
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerJoinHandler(this, linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitHandler(this, linearPhaseSeries), this);
+        getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(), this);
     }
+
+    private void createTeams() {
+        teamService = new TeamService<>();
+
+        int teamSize =  mode.getTeams() / mode.getPlayers();
+        var random = new Random();
+        int rnd = random.nextInt(Teams.VALUES.length);
+
+        int position = 0;
+
+        HashSet<String> usedKeys = new HashSet<>();
+
+        var randomTeam = Teams.VALUES[rnd];
+        teamService.add(new BedwarsTeam(languageProvider, randomTeam.getKey(), teamSize, randomTeam.getColorData(), randomTeam.getSkinValue()));
+        usedKeys.add(randomTeam.getKey());
+        position += 1;
+
+        while (position < mode.getTeams()) {
+            randomTeam = Teams.VALUES[random.nextInt(Teams.VALUES.length)];
+
+            if (!usedKeys.contains(randomTeam.getKey())) {
+                teamService.add(new BedwarsTeam(languageProvider, randomTeam.getKey(), teamSize, randomTeam.getColorData(), randomTeam.getSkinValue()));
+                usedKeys.add(randomTeam.getKey());
+                position++;
+            }
+        }
+     }
 
     public LanguageProvider<CommandSender> getLanguageProvider() {
         return languageProvider;
@@ -116,5 +157,9 @@ public class Bedwars extends Game {
 
     public Mode getMode() {
         return mode;
+    }
+
+    public TeamService<BedwarsTeam> getTeamService() {
+        return teamService;
     }
 }

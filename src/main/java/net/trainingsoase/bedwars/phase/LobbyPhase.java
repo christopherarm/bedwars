@@ -1,9 +1,18 @@
 package net.trainingsoase.bedwars.phase;
 
+import net.trainingsoase.api.player.IOasePlayer;
+import net.trainingsoase.bedwars.Bedwars;
+import net.trainingsoase.bedwars.inventory.InventoryService;
+import net.trainingsoase.bedwars.item.JoinItems;
+import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * @author byCrypex
@@ -11,25 +20,29 @@ import org.bukkit.entity.Player;
  * @since
  **/
 
-public class LobbyPhase extends TimedPhase {
+public class LobbyPhase extends TimedPhase implements Listener {
 
-    private static final int MIN_PLAYERS = 2;
-    private static final int MAX_PLAYERS = 2;
+    private final Bedwars bedwars;
 
-    public LobbyPhase(Game game, boolean async) {
+    private final JoinItems joinItems;
+
+    public LobbyPhase(Bedwars bedwars, Game game, boolean async) {
         super("Lobby", game, 20, async);
+        this.bedwars = bedwars;
         this.setPaused(true);
         this.setCurrentTicks(61);
+        this.addPhaseListener(this);
+        this.joinItems = new JoinItems(bedwars.getLanguageProvider());
     }
 
     public void checkStartCondition() {
-        if(Bukkit.getOnlinePlayers().size() >= MIN_PLAYERS && isPaused()) {
+        if(Bukkit.getOnlinePlayers().size() >= bedwars.getMode().getStartSize() && isPaused()) {
             setPaused(false);
         }
     }
 
     public void checkStopCondition() {
-        if((Bukkit.getOnlinePlayers().size() - 1) < MIN_PLAYERS && !isPaused()) {
+        if((Bukkit.getOnlinePlayers().size() - 1) < bedwars.getMode().getStartSize() && !isPaused()) {
             setPaused(true);
             setCurrentTicks(61);
 
@@ -83,5 +96,23 @@ public class LobbyPhase extends TimedPhase {
             default:
                 break;
         }
+    }
+
+    @EventHandler
+    public void handleInteract(final PlayerInteractEvent event) {
+        final Player player = event.getPlayer();
+        final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
+
+        if(event.getItem() == null) return;
+        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
+        if(event.getItem().getItemMeta().getDisplayName().equals(
+                bedwars.getLanguageProvider().getTextProvider().getString("item_teamselector", oasePlayer.getLocale()))) {
+            player.openInventory(InventoryService.getInstance(bedwars).getTeamselector().getTeamSelectorInventory(oasePlayer.getLocale()));
+        }
+    }
+
+    public JoinItems getJoinItems() {
+        return joinItems;
     }
 }
