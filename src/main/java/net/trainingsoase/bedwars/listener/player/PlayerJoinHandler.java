@@ -47,8 +47,6 @@ public class PlayerJoinHandler implements Listener {
         this.bedwars = bedwars;
         this.phaseSeries = phaseSeries;
 
-        joinItems = JoinItems.getInstance(bedwars.getLanguageProvider());
-
         sidebar.put("§8§m----------------", 12);
         sidebar.put("§7", 11);
         sidebar.put(" §8➥ §7", 10);
@@ -64,6 +62,9 @@ public class PlayerJoinHandler implements Listener {
         sidebar.put("         ", 0);
 
         this.playerExecutor =  OaseAPIImpl.INSTANCE.getPlayerExecutor();
+
+        this.joinItems = ((LobbyPhase) phaseSeries.getCurrentPhase()).getJoinItems();
+
         sendCountDownBar();
     }
 

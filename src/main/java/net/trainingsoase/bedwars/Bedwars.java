@@ -81,14 +81,14 @@ public class Bedwars extends Game {
 
     @Override
     public void onEnable() {
+        ColorRegistry.useLegacyColors = true;
+        languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
+
         linearPhaseSeries = new LinearPhaseSeries<>();
         linearPhaseSeries.add(new LobbyPhase(this, this, true));
         linearPhaseSeries.add(new IngamePhase(this, true));
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
-
-        ColorRegistry.useLegacyColors = true;
-        languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
 
         registerListeners();
         setupGame();

@@ -3,6 +3,7 @@ package net.trainingsoase.bedwars.phase;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.inventory.InventoryService;
+import net.trainingsoase.bedwars.item.JoinItems;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
@@ -23,12 +24,15 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
     private final Bedwars bedwars;
 
+    private final JoinItems joinItems;
+
     public LobbyPhase(Bedwars bedwars, Game game, boolean async) {
         super("Lobby", game, 20, async);
         this.bedwars = bedwars;
         this.setPaused(true);
         this.setCurrentTicks(61);
         this.addPhaseListener(this);
+        this.joinItems = new JoinItems(bedwars.getLanguageProvider());
     }
 
     public void checkStartCondition() {
@@ -106,5 +110,9 @@ public class LobbyPhase extends TimedPhase implements Listener {
                 bedwars.getLanguageProvider().getTextProvider().getString("item_teamselector", oasePlayer.getLocale()))) {
             player.openInventory(InventoryService.getInstance(bedwars).getTeamselector().getTeamSelectorInventory(oasePlayer.getLocale()));
         }
+    }
+
+    public JoinItems getJoinItems() {
+        return joinItems;
     }
 }
