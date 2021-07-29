@@ -16,9 +16,5 @@ public enum SpawnType {
         return name;
     }
 
-    private static final SpawnType[] VALUES = values();
-
-    public static SpawnType[] getValues() {
-        return VALUES;
-    }
+    public static final SpawnType[] VALUES = values();
 }
