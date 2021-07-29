@@ -2,6 +2,7 @@ package net.trainingsoase.bedwars.api;
 
 import net.trainingsoase.bedwars.map.GameMap;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

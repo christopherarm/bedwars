@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class SlimeManager {
         SLIME_LOADER = slimePlugin.getLoader("mongodb");
     }
 
-    public void loadGameArena(String map, GameMap gameMap, Player player) {
+    public void loadGameArena(@NotNull String map, @NotNull GameMap gameMap) {
         try {
             String mapname = "BW-" + map;
             SLIME_LOADER.unlockWorld(mapname);
@@ -62,6 +63,7 @@ public class SlimeManager {
                 bedwars.getServer().getPluginManager().callEvent(mapLoadedEvent);
             });
         } catch (UnknownWorldException | NewerFormatException | CorruptedWorldException | IOException | WorldInUseException e) {
+            // Stop server, move to next round
             e.printStackTrace();
         }
     }
