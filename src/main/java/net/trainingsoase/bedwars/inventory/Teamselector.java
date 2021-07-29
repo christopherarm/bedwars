@@ -1,8 +1,9 @@
 package net.trainingsoase.bedwars.inventory;
 
-import at.rxcki.strigiformes.MessageProvider;
+import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
+import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.oreo.inventory.InventoryLayout;
 import net.trainingsoase.oreo.inventory.InventoryRows;
 import net.trainingsoase.oreo.inventory.translated.GlobalTranslatedInventoryBuilder;
@@ -11,7 +12,9 @@ import net.trainingsoase.oreo.inventory.util.LayoutCalculator;
 import net.trainingsoase.oreo.item.TranslatedItem;
 import net.trainingsoase.oreo.item.builder.ColoredBuilder;
 import net.trainingsoase.oreo.item.builder.SkullBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -54,32 +57,19 @@ public class Teamselector {
                     int[] slots = bedwars.getMode().getInvSlots();
                     dataLayout.blank(slots);
 
-                    switch (bedwars.getMode().getId()) {
-                        case 0:
-                            BedwarsTeam team1 = bedwars.getTeamService().getTeams().get(0);
-                            BedwarsTeam team2 = bedwars.getTeamService().getTeams().get(1);
-
-                            dataLayout.setItem(slots[0], new TranslatedSlot(TranslatedItem.of(
-                                    new SkullBuilder().setSkinOverValue(team1.getSkinValue()).setAmount(team1.getCurrentSize()))
-                                    .setDisplayName(team1.getIdentifier())).setClickListener(handleTeamClick(team1)));
-
-                            dataLayout.setItem(slots[1], new TranslatedSlot(TranslatedItem.of(
-                                    new SkullBuilder().setSkinOverValue(team2.getSkinValue()).setAmount(team2.getCurrentSize()))
-                                    .setDisplayName(team2.getIdentifier())).setClickListener(handleTeamClick(team2)));
-                            break;
-
-                        case 1:
-                            break;
-
-                        case 2:
-                            break;
-
-                        default:
-                            break;
+                    for (int i = 0; i < bedwars.getMode().getTeams(); i++) {
+                        buildTeamItem(dataLayout, slots, i, bedwars.getTeamService().getTeams().get(i));
                     }
 
                     return dataLayout;
                 })));
+    }
+
+    private void buildTeamItem(InventoryLayout layout, int[] slots, int id, BedwarsTeam bedwarsTeam) {
+        layout.setItem(slots[id], new TranslatedSlot(TranslatedItem.of(
+                        new SkullBuilder().setSkinOverValue(bedwarsTeam.getSkinValue()).setAmount(bedwarsTeam.getCurrentSize()))
+                .setDisplayName(bedwarsTeam.getIdentifier(), bedwarsTeam.getColorData().getChatColor()))
+                .setClickListener(handleTeamClick(bedwarsTeam)));
     }
 
     public void updateTeamSelector() {
@@ -91,15 +81,22 @@ public class Teamselector {
             event.setCancelled(true);
 
             final Player player = (Player) event.getWhoClicked();
+            final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
 
-            bedwars.getTeamService().getTeam(player).ifPresent(playerTeam -> {
-                if(playerTeam.equals(bedwarsTeam)) {
+            var team = bedwars.getTeamService().getTeam(player);
+
+            if(team.isPresent()) {
+                if(team.get().equals(bedwarsTeam)) {
+                    bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "team_already_in_team");
                     return;
                 }
-                playerTeam.removePlayer(player);
-            });
+                team.get().removePlayer(player);
+            }
 
             bedwarsTeam.addPlayer(player);
+            bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "team_now_in_team",
+                            bedwars.getLanguageProvider().getTextProvider()
+                                    .format(bedwarsTeam.getIdentifier(), oasePlayer.getLocale(), bedwarsTeam.getColorData().getChatColor()));
             updateTeamSelector();
         };
     }
