@@ -79,6 +79,7 @@ public class PlayerJoinHandler implements Listener {
             setupPlayer(player);
             setupScoreboard(player, oasePlayer);
             setupJoinItems(player, oasePlayer);
+            sendCountDownBar();
         }
     }
 
@@ -106,11 +107,31 @@ public class PlayerJoinHandler implements Listener {
     }
 
     private void setupJoinItems(Player player, IOasePlayer oasePlayer) {
-
         player.getInventory().setItem(0, joinItems.getTeamSelectionItem().get(oasePlayer.getLocale()));
         player.getInventory().setItem(2, joinItems.getVotingItem().get(oasePlayer.getLocale()));
         player.getInventory().setItem(4, joinItems.getGuardianItem().get(oasePlayer.getLocale()));
         player.getInventory().setItem(6, joinItems.getMapVotingItem().get(oasePlayer.getLocale()));
         player.getInventory().setItem(8, joinItems.getLobbyItem().get(oasePlayer.getLocale()));
+    }
+
+    private void sendCountDownBar() {
+        bedwars.runTaskTimer(() -> {
+            int startSize = bedwars.getMode().getStartSize();
+            int onlinePlayers = Bukkit.getOnlinePlayers().size();
+            int sizeNeeded = startSize - onlinePlayers;
+
+            var moreCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_more", sizeNeeded);
+            var oneCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_one");
+
+            if(onlinePlayers < startSize) {
+                for (IOasePlayer iOasePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
+                    if (sizeNeeded == 1) {
+                        bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, oneCache.getMessage(iOasePlayer.getLocale()));
+                        return;
+                    }
+                    bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, moreCache.getMessage(iOasePlayer.getLocale()));
+                }
+            }
+        }, 0, 40);
     }
 }

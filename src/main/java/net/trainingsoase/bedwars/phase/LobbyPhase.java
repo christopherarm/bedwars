@@ -22,10 +22,12 @@ public class LobbyPhase extends TimedPhase {
         this.setCurrentTicks(61);
     }
 
-    public void checkStartCondition() {
+    public boolean checkStartCondition() {
         if(Bukkit.getOnlinePlayers().size() >= MIN_PLAYERS && isPaused()) {
             setPaused(false);
+            return true;
         }
+        return false;
     }
 
     public void checkStopCondition() {
