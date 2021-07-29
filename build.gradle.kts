@@ -19,6 +19,10 @@ repositories {
     }
 
     maven {
+        url = uri("https://repo.glaremasters.me/repository/concuncan/")
+    }
+
+    maven {
         url = uri("https://repo.cloudnetservice.eu/repository/releases/")
     }
 
@@ -62,6 +66,7 @@ dependencies {
     compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.+")
     compileOnlyApi("net.trainingsoase:Oreo:1.0.+")
+    compileOnlyApi("com.grinderwolf:slimeworldmanager-api:2.2.1")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")

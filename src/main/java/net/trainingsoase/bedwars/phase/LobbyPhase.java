@@ -7,6 +7,7 @@ import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +35,10 @@ public class LobbyPhase extends TimedPhase implements Listener {
     public void checkStartCondition() {
         if(Bukkit.getOnlinePlayers().size() >= bedwars.getMode().getStartSize() && isPaused()) {
             setPaused(false);
+
+            if(Bukkit.getOnlinePlayers().size() == bedwars.getMode().getPlayers()) {
+                setCurrentTicks(2);
+            }
         }
     }
 
@@ -55,42 +60,42 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
     @Override
     protected void onFinish() {
-
+        Bukkit.broadcastMessage("START");
     }
 
     @Override
     protected void onTick() {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setLevel(getCurrentTicks());
-        }
+            final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());
 
-        switch (getCurrentTicks()) {
-            case 30:
-                // 30 Sekunden
-                break;
+            switch (getCurrentTicks()) {
+                case 30:
+                case 15:
+                case 10:
+                    bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "game_start_in_more", getCurrentTicks());
+                    onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.DIG_WOOD, 1f, 1f);
+                    break;
 
-            case 15:
-                // 15 Sekunden
-                break;
+                case 5:
+                case 4:
+                case 3:
+                case 2:
+                    bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "game_start_in_more", getCurrentTicks());
+                    onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.NOTE_BASS, 1f, 1f);
+                    break;
 
-            case 10:
-                // 10 Sekunden
-                break;
+                case 1:
+                    bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "game_start_in_one");
+                    onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.NOTE_BASS, 1f, 1f);
+                    break;
 
-            case 5:
-            case 4:
-            case 3:
-            case 2:
-            case 1:
-                // <= 5 Sekunden
-                break;
-
-            case 0:
-                // Spiel starten
-                break;
-
-            default:
-                break;
+                case 0:
+                    onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.LEVEL_UP, 2f, 5f);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

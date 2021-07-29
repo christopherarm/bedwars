@@ -128,6 +128,14 @@ public class Bedwars extends Game {
         teamService = new TeamService<>();
 
         int teamSize =  mode.getTeams() / mode.getPlayers();
+
+        if(teamSize == 8) {
+            for (Teams team : Teams.VALUES) {
+                teamService.add(new BedwarsTeam(languageProvider, team.getKey(), teamSize, team.getColorData(), team.getSkinValue()));
+            }
+            return;
+        }
+
         var random = new Random();
         int rnd = random.nextInt(Teams.VALUES.length);
 
