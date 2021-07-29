@@ -70,7 +70,7 @@ public class GameMap extends BaseMap {
      * Default constructor
      */
     public GameMap() {
-        super("", null, "TrainingsOase");
+        super("Test", null, "TrainingsOase");
         this.shopLocations = new ArrayList<>();
         this.bronzeSpawnerLocations = new ArrayList<>();
         this.ironSpawnerLocations = new ArrayList<>();

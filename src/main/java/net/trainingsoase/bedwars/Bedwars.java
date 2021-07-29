@@ -6,10 +6,12 @@ import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.trainingsoase.api.database.AbstractSentryConnector;
 import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
+import net.trainingsoase.bedwars.listener.map.MapLoadedHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerSpawnLocationHandler;
 import net.trainingsoase.bedwars.map.MapHelper;
+import net.trainingsoase.bedwars.map.SlimeManager;
 import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
@@ -53,6 +55,8 @@ public class Bedwars extends Game {
 
     private LanguageProvider<CommandSender> languageProvider;
 
+    private SlimeManager slimeManager;
+
     @Override
     public void onLoad() {
         File dataFolder = getDataFolder();
@@ -90,6 +94,8 @@ public class Bedwars extends Game {
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
 
+        slimeManager = new SlimeManager(this);
+
         registerListeners();
         setupGame();
         createTeams();
@@ -115,13 +121,15 @@ public class Bedwars extends Game {
         BridgeServerHelper.setMaxPlayers(mode.getPlayers());
         BridgeServerHelper.updateServiceInfo();
 
-        MapHelper.getInstance().loadLobby();
+        MapHelper.getInstance(this).loadLobby();
+        MapHelper.getInstance(this).loadMapNames();
     }
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerJoinHandler(this, linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitHandler(this, linearPhaseSeries), this);
-        getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(), this);
+        getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(this), this);
+        getServer().getPluginManager().registerEvents(new MapLoadedHandler(this), this);
     }
 
     private void createTeams() {
@@ -169,5 +177,9 @@ public class Bedwars extends Game {
 
     public TeamService<BedwarsTeam> getTeamService() {
         return teamService;
+    }
+
+    public SlimeManager getSlimeManager() {
+        return slimeManager;
     }
 }

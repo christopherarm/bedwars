@@ -23,6 +23,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import static net.trainingsoase.bedwars.inventory.InventoryService.GLASS_PANE;
+
 /**
  * @author byCrypex
  * @version 1.0.0
@@ -30,9 +32,6 @@ import java.util.function.Consumer;
  **/
 
 public class Teamselector {
-
-    private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
-            .setColor(DyeColor.GRAY).setEmptyName().build();
 
     private final GlobalTranslatedInventoryBuilder teamSelectorInventoryBuilder;
 
