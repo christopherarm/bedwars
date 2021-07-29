@@ -5,7 +5,6 @@ import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.api.player.IPlayerExecutor;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.item.JoinItems;
-import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
@@ -17,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
+import net.trainingsoase.bedwars.phase.LobbyPhase;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -63,7 +63,7 @@ public class PlayerJoinHandler implements Listener {
         sidebar.put(" §8➥ §a", 1);
         sidebar.put("         ", 0);
 
-        this.playerExecutor =  OaseAPIImpl.INSTANCE.getPlayerExecutor();
+        this.playerExecutor = OaseAPIImpl.INSTANCE.getPlayerExecutor();
     }
 
     @EventHandler
