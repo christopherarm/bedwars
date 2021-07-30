@@ -9,6 +9,7 @@ import net.trainingsoase.api.database.sentry.SentryConnector;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerSpawnLocationHandler;
+import net.trainingsoase.bedwars.listener.protection.ProtectionHandler;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.IngamePhase;
@@ -18,6 +19,7 @@ import net.trainingsoase.bedwars.team.Teams;
 import net.trainingsoase.bedwars.utils.Mode;
 import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
+import net.trainingsoase.hopjes.api.listener.*;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.hopjes.api.teams.TeamService;
@@ -122,6 +124,12 @@ public class Bedwars extends Game {
         getServer().getPluginManager().registerEvents(new PlayerJoinHandler(this, linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitHandler(this, linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(), this);
+        getServer().getPluginManager().registerEvents(new ProtectionHandler(linearPhaseSeries), this);
+        getServer().getPluginManager().registerEvents(new NoArmorStandManipulateListener(), this);
+        getServer().getPluginManager().registerEvents(new NoFoodListener(), this);
+        getServer().getPluginManager().registerEvents(new NoWeatherListener(), this);
+        getServer().getPluginManager().registerEvents(new NoLeaveDecayListener(), this);
+        getServer().getPluginManager().registerEvents(new NoItemFrameBreakListener(), this);
     }
 
     private void createTeams() {
