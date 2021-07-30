@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 /**
  * @author byCrypex
@@ -61,6 +62,7 @@ public class SlimeManager {
                     try {
                         SLIME_LOADER.unlockWorld(mapname);
                     } catch (UnknownWorldException | IOException e) {
+                        bedwars.getLogger().log(Level.SEVERE, "SLIME: Could not unlock the world in mongodb");
                         e.printStackTrace();
                     }
 
@@ -69,7 +71,10 @@ public class SlimeManager {
                 });
             });
         } catch (UnknownWorldException | NewerFormatException | CorruptedWorldException | IOException | WorldInUseException e) {
-            // Stop server, move to next round
+            Bukkit.getOnlinePlayers().forEach(all -> {
+                all.sendMessage("§cERROR: The Server you was previously on was misconfigurated, please contact a staff member.");
+            });
+            Bukkit.shutdown();
             e.printStackTrace();
         }
     }
