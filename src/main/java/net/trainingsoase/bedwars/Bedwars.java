@@ -4,8 +4,12 @@ import at.rxcki.strigiformes.color.ColorRegistry;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.trainingsoase.api.database.AbstractSentryConnector;
+import net.trainingsoase.api.database.redis.IRedisEventManager;
+import net.trainingsoase.api.database.redis.events.RPlayerServerSwitchEvent;
 import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
+import net.trainingsoase.bedwars.inventory.Mapvoting;
+import net.trainingsoase.bedwars.inventory.Teamselector;
 import net.trainingsoase.bedwars.listener.map.MapLoadedHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
@@ -18,6 +22,7 @@ import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.team.Teams;
 import net.trainingsoase.bedwars.utils.Mode;
+import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
@@ -56,6 +61,9 @@ public class Bedwars extends Game {
     private LanguageProvider<CommandSender> languageProvider;
 
     private SlimeManager slimeManager;
+
+    private Mapvoting mapvoting;
+    private Teamselector teamselector;
 
     @Override
     public void onLoad() {
@@ -99,6 +107,15 @@ public class Bedwars extends Game {
         registerListeners();
         setupGame();
         createTeams();
+
+        mapvoting = new Mapvoting(this);
+        teamselector = new Teamselector(this);
+
+/*        IRedisEventManager eventManager = OaseAPIImpl.INSTANCE.getEventManager();
+
+        eventManager.registerListener(RPlayerServerSwitchEvent.class, rPlayerServerSwitchEvent -> {
+            System.out.println(rPlayerServerSwitchEvent.getUuid());
+        });*/
     }
 
     @Override
@@ -181,5 +198,13 @@ public class Bedwars extends Game {
 
     public SlimeManager getSlimeManager() {
         return slimeManager;
+    }
+
+    public Mapvoting getMapvoting() {
+        return mapvoting;
+    }
+
+    public Teamselector getTeamselector() {
+        return teamselector;
     }
 }

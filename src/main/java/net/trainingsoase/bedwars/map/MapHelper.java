@@ -95,12 +95,13 @@ public class MapHelper {
         }
     }
 
-    public void loadGameMap(String mapName) {
+    public GameMap loadGameMap(String mapName) {
         try (BufferedReader reader = Files.newBufferedReader(Paths.get("/home/Maps/Bedwars/" + bedwars.getMode().getMode() + "/" + mapName, MAP_FILE))) {
             gameMap = Optional.ofNullable(GSON.fromJson(reader, GameMap.class)).get();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return gameMap;
     }
 
     public LobbyMap getLobbyMap() {

@@ -61,11 +61,11 @@ public class PlayerJoinHandler implements Listener {
         sidebar.put(" §8➥ §a", 1);
         sidebar.put("         ", 0);
 
-        this.playerExecutor =  OaseAPIImpl.INSTANCE.getPlayerExecutor();
+        this.playerExecutor = OaseAPIImpl.INSTANCE.getPlayerExecutor();
 
         this.joinItems = ((LobbyPhase) phaseSeries.getCurrentPhase()).getJoinItems();
 
-        sendCountDownBar();
+        //sendCountDownBar();
     }
 
     @EventHandler

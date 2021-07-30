@@ -4,9 +4,7 @@ import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
-import net.trainingsoase.bedwars.inventory.InventoryService;
 import net.trainingsoase.bedwars.item.JoinItems;
-import net.trainingsoase.bedwars.map.GameMap;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
@@ -70,8 +68,8 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
     @Override
     protected void onFinish() {
-        MapHelper.getInstance(bedwars).loadGameMap("Platzangst");
-        bedwars.getSlimeManager().loadGameArena("Platzangst", MapHelper.getInstance(bedwars).getGameMap());
+        bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
+                MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
     }
 
     @Override
@@ -120,7 +118,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
         if(event.getItem().getItemMeta().getDisplayName().equals(
                 bedwars.getLanguageProvider().getTextProvider().getString("item_teamselector", oasePlayer.getLocale()))) {
-            player.openInventory(InventoryService.getInstance(bedwars).getTeamselector().getTeamSelectorInventory(oasePlayer.getLocale()));
+            player.openInventory(bedwars.getTeamselector().getTeamSelectorInventory(oasePlayer.getLocale()));
 
         } else if(event.getItem().getItemMeta().getDisplayName().equals(
                 bedwars.getLanguageProvider().getTextProvider().getString("item_lobby", oasePlayer.getLocale()))) {
@@ -129,7 +127,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
         } else if(event.getItem().getItemMeta().getDisplayName().equals(
                 bedwars.getLanguageProvider().getTextProvider().getString("item_mapvoting", oasePlayer.getLocale()))) {
-            player.openInventory(InventoryService.getInstance(bedwars).getMapvoting().getMapVotingInventory(oasePlayer.getLocale()));
+            player.openInventory(bedwars.getMapvoting().getMapVotingInventory(oasePlayer.getLocale()));
         }
     }
 

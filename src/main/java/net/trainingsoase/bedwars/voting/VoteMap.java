@@ -36,11 +36,11 @@ public class VoteMap {
     }
 
     public void addVote() {
-        this.votes++;
+        ++this.votes;
     }
 
     public void removeVote() {
-        this.votes--;
+        --this.votes;
     }
 
     public HashSet<Player> getPlayers() {
