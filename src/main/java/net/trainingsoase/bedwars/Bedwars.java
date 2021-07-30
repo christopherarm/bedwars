@@ -4,8 +4,6 @@ import at.rxcki.strigiformes.color.ColorRegistry;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.trainingsoase.api.database.AbstractSentryConnector;
-import net.trainingsoase.api.database.redis.IRedisEventManager;
-import net.trainingsoase.api.database.redis.events.RPlayerServerSwitchEvent;
 import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
 import net.trainingsoase.bedwars.inventory.Mapvoting;
@@ -22,9 +20,9 @@ import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.team.Teams;
 import net.trainingsoase.bedwars.utils.Mode;
-import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
+import net.trainingsoase.hopjes.api.listener.*;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.hopjes.api.teams.TeamService;
@@ -102,20 +100,9 @@ public class Bedwars extends Game {
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
 
-        slimeManager = new SlimeManager(this);
-
         registerListeners();
         setupGame();
         createTeams();
-
-        mapvoting = new Mapvoting(this);
-        teamselector = new Teamselector(this);
-
-/*        IRedisEventManager eventManager = OaseAPIImpl.INSTANCE.getEventManager();
-
-        eventManager.registerListener(RPlayerServerSwitchEvent.class, rPlayerServerSwitchEvent -> {
-            System.out.println(rPlayerServerSwitchEvent.getUuid());
-        });*/
     }
 
     @Override
@@ -147,6 +134,13 @@ public class Bedwars extends Game {
         getServer().getPluginManager().registerEvents(new PlayerQuitHandler(this, linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(this), this);
         getServer().getPluginManager().registerEvents(new MapLoadedHandler(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(), this);
+        getServer().getPluginManager().registerEvents(new ProtectionHandler(linearPhaseSeries), this);
+        getServer().getPluginManager().registerEvents(new NoArmorStandManipulateListener(), this);
+        getServer().getPluginManager().registerEvents(new NoFoodListener(), this);
+        getServer().getPluginManager().registerEvents(new NoWeatherListener(), this);
+        getServer().getPluginManager().registerEvents(new NoLeaveDecayListener(), this);
+        getServer().getPluginManager().registerEvents(new NoItemFrameBreakListener(), this);
     }
 
     private void createTeams() {
@@ -194,17 +188,5 @@ public class Bedwars extends Game {
 
     public TeamService<BedwarsTeam> getTeamService() {
         return teamService;
-    }
-
-    public SlimeManager getSlimeManager() {
-        return slimeManager;
-    }
-
-    public Mapvoting getMapvoting() {
-        return mapvoting;
-    }
-
-    public Teamselector getTeamselector() {
-        return teamselector;
     }
 }
