@@ -12,6 +12,7 @@ import net.trainingsoase.bedwars.listener.map.MapLoadedHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerSpawnLocationHandler;
+import net.trainingsoase.bedwars.listener.protection.ProtectionHandler;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.map.SlimeManager;
 import net.trainingsoase.bedwars.phase.EndingPhase;
@@ -22,6 +23,7 @@ import net.trainingsoase.bedwars.team.Teams;
 import net.trainingsoase.bedwars.utils.Mode;
 import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
+import net.trainingsoase.hopjes.api.ColorData;
 import net.trainingsoase.hopjes.api.listener.*;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
@@ -32,9 +34,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,6 +103,10 @@ public class Bedwars extends Game {
         registerListeners();
         setupGame();
         createTeams();
+
+        mapvoting = new Mapvoting(this);
+        teamselector = new Teamselector(this);
+        slimeManager = new SlimeManager(this);
     }
 
     @Override
@@ -134,7 +138,7 @@ public class Bedwars extends Game {
         getServer().getPluginManager().registerEvents(new PlayerQuitHandler(this, linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(this), this);
         getServer().getPluginManager().registerEvents(new MapLoadedHandler(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(), this);
+        getServer().getPluginManager().registerEvents(new PlayerSpawnLocationHandler(this), this);
         getServer().getPluginManager().registerEvents(new ProtectionHandler(linearPhaseSeries), this);
         getServer().getPluginManager().registerEvents(new NoArmorStandManipulateListener(), this);
         getServer().getPluginManager().registerEvents(new NoFoodListener(), this);
@@ -162,7 +166,12 @@ public class Bedwars extends Game {
 
         HashSet<String> usedKeys = new HashSet<>();
 
+        List<ColorData> colorDataList = new ArrayList<>();
+        colorDataList.add(ColorData.RED);
+        colorDataList.add(ColorData.BLUE);
+
         var randomTeam = Teams.VALUES[rnd];
+        randomTeam.setColorData(colorDataList.get(position));
         teamService.add(new BedwarsTeam(languageProvider, randomTeam.getKey(), teamSize, randomTeam.getColorData(), randomTeam.getSkinValue()));
         usedKeys.add(randomTeam.getKey());
         position += 1;
@@ -171,6 +180,7 @@ public class Bedwars extends Game {
             randomTeam = Teams.VALUES[random.nextInt(Teams.VALUES.length)];
 
             if (!usedKeys.contains(randomTeam.getKey())) {
+                randomTeam.setColorData(colorDataList.get(position));
                 teamService.add(new BedwarsTeam(languageProvider, randomTeam.getKey(), teamSize, randomTeam.getColorData(), randomTeam.getSkinValue()));
                 usedKeys.add(randomTeam.getKey());
                 position++;
@@ -188,5 +198,17 @@ public class Bedwars extends Game {
 
     public TeamService<BedwarsTeam> getTeamService() {
         return teamService;
+    }
+
+    public Mapvoting getMapvoting() {
+        return mapvoting;
+    }
+
+    public SlimeManager getSlimeManager() {
+        return slimeManager;
+    }
+
+    public Teamselector getTeamselector() {
+        return teamselector;
     }
 }

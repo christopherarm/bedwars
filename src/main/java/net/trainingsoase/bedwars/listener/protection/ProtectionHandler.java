@@ -35,7 +35,7 @@ public class ProtectionHandler implements Listener {
 
     @EventHandler
     public void handleDropItem(final PlayerDropItemEvent event) {
-        //TODO: add Spectator handling
+        //TODO: add Spectator handlings
         if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
                 || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
             event.setCancelled(true);

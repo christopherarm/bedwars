@@ -34,6 +34,10 @@ public enum Teams {
         this.skinValue = skinValue;
     }
 
+    public void setColorData(ColorData colorData) {
+        this.colorData = colorData;
+    }
+
     public String getKey() {
         return key;
     }

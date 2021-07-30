@@ -6,9 +6,11 @@ import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.item.JoinItems;
 import net.trainingsoase.bedwars.map.MapHelper;
+import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
+import net.trainingsoase.hopjes.api.teams.TeamService;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -68,6 +70,8 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
     @Override
     protected void onFinish() {
+        pickRandomTeams();
+
         bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
                 MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
     }
@@ -110,8 +114,8 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
     @EventHandler
     public void handleInteract(final PlayerInteractEvent event) {
-        final Player player = event.getPlayer();
-        final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
+        var player = event.getPlayer();
+        var oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
 
         if(event.getItem() == null) return;
         if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
@@ -128,6 +132,21 @@ public class LobbyPhase extends TimedPhase implements Listener {
         } else if(event.getItem().getItemMeta().getDisplayName().equals(
                 bedwars.getLanguageProvider().getTextProvider().getString("item_mapvoting", oasePlayer.getLocale()))) {
             player.openInventory(bedwars.getMapvoting().getMapVotingInventory(oasePlayer.getLocale()));
+        }
+    }
+
+    private void pickRandomTeams() {
+        var teamService = bedwars.getTeamService();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if(!teamService.getTeam(player).isPresent()) {
+                for (BedwarsTeam team : teamService.getTeams()) {
+                    if(team.getPlayers().size() != bedwars.getMode().getPlayers() / bedwars.getMode().getTeams()) {
+                        team.addPlayer(player);
+                        break;
+                    }
+                }
+            }
         }
     }
 
