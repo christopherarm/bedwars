@@ -2,15 +2,21 @@ package net.trainingsoase.bedwars.map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.oreo.location.WrappedLocation;
 import net.trainingsoase.oreo.location.adapter.WrappedLocationTypeAdapter;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * @author byCrypex
@@ -21,6 +27,8 @@ import java.util.logging.Level;
 public class MapHelper {
 
     private static MapHelper instance;
+
+    private final Bedwars bedwars;
 
     /**
      * Default map file constant
@@ -40,8 +48,17 @@ public class MapHelper {
      */
     private LobbyMap lobbyMap;
 
-    public MapHelper() {
+    /**
+     * Default Game map
+     */
+    private GameMap gameMap;
+
+    private List<String> mapNames;
+
+    public MapHelper(Bedwars bedwars) {
         instance = this;
+        this.bedwars = bedwars;
+        this.mapNames = new ArrayList<>();
     }
 
     /**
@@ -61,13 +78,47 @@ public class MapHelper {
         }
     }
 
+    public void loadMapNames() {
+        try {
+            List<Path> subfolder = Files.walk(Paths.get("/home/Maps/Bedwars/" + bedwars.getMode().getMode()), 1)
+                    .filter(Files::isDirectory)
+                    .filter(it -> !it.getFileName().toString().equalsIgnoreCase("world"))
+                    .collect(Collectors.toList());
+
+            subfolder.remove(0);
+
+            for (Path path : subfolder) {
+                mapNames.add(path.getFileName().toString());
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public GameMap loadGameMap(String mapName) {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get("/home/Maps/Bedwars/" + bedwars.getMode().getMode() + "/" + mapName, MAP_FILE))) {
+            gameMap = Optional.ofNullable(GSON.fromJson(reader, GameMap.class)).get();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return gameMap;
+    }
+
     public LobbyMap getLobbyMap() {
         return lobbyMap;
     }
 
-    public static synchronized MapHelper getInstance() {
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public List<String> getMapNames() {
+        return mapNames;
+    }
+
+    public static synchronized MapHelper getInstance(Bedwars bedwars) {
         if(instance == null) {
-            new MapHelper();
+            new MapHelper(bedwars);
         }
         return instance;
     }

@@ -52,6 +52,8 @@ public class PlayerQuitHandler implements Listener {
             for (IOasePlayer iOasePlayer : this.executor.getCurrentOnlinePlayers()) {
                 bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, cache.getMessage(iOasePlayer.getLocale()));
             }
+
+            //TODO: remove from Mapvoting and Teamsystem
             return;
         }
 

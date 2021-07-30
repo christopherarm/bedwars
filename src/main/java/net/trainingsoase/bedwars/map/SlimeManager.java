@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 /**
  * @author byCrypex
@@ -51,19 +52,29 @@ public class SlimeManager {
             CompletableFuture<SlimeWorld> futureSlimeWorld = CompletableFuture.completedFuture(slimePlugin.loadWorld(SLIME_LOADER, mapname,  PROPERTIES));
 
             futureSlimeWorld.whenComplete((slimeWorld, throwable) -> {
-                World createdWorld = Bukkit.getWorld(mapname);
+                CompletableFuture<Void> worldFuture = CompletableFuture.runAsync(() -> {
+                    slimePlugin.generateWorld(slimeWorld);
+                });
 
-                try {
-                    SLIME_LOADER.unlockWorld(mapname);
-                } catch (UnknownWorldException | IOException e) {
-                    e.printStackTrace();
-                }
+                worldFuture.whenComplete((unused, throwable1) -> {
+                    World createdWorld = Bukkit.getWorld(mapname);
 
-                MapLoadedEvent mapLoadedEvent = new MapLoadedEvent(createdWorld, gameMap);
-                bedwars.getServer().getPluginManager().callEvent(mapLoadedEvent);
+                    try {
+                        SLIME_LOADER.unlockWorld(mapname);
+                    } catch (UnknownWorldException | IOException e) {
+                        bedwars.getLogger().log(Level.SEVERE, "SLIME: Could not unlock the world in mongodb");
+                        e.printStackTrace();
+                    }
+
+                    MapLoadedEvent mapLoadedEvent = new MapLoadedEvent(createdWorld, gameMap);
+                    bedwars.getServer().getPluginManager().callEvent(mapLoadedEvent);
+                });
             });
         } catch (UnknownWorldException | NewerFormatException | CorruptedWorldException | IOException | WorldInUseException e) {
-            // Stop server, move to next round
+            Bukkit.getOnlinePlayers().forEach(all -> {
+                all.sendMessage("§cERROR: The Server you was previously on was misconfigurated, please contact a staff member.");
+            });
+            Bukkit.shutdown();
             e.printStackTrace();
         }
     }

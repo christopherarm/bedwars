@@ -14,7 +14,6 @@ import net.trainingsoase.oreo.item.builder.ColoredBuilder;
 import net.trainingsoase.oreo.item.builder.SkullBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -31,12 +30,12 @@ import java.util.function.Consumer;
 
 public class Teamselector {
 
-    private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
-            .setColor(DyeColor.GRAY).setEmptyName().build();
-
     private final GlobalTranslatedInventoryBuilder teamSelectorInventoryBuilder;
 
     private final Bedwars bedwars;
+
+    private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
+            .setColor(DyeColor.GRAY).setEmptyName().build();
 
     public Teamselector(Bedwars bedwars) {
         this.bedwars = bedwars;

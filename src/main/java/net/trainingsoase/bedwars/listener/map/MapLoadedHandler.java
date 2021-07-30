@@ -1,7 +1,12 @@
 package net.trainingsoase.bedwars.listener.map;
 
+import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.api.MapLoadedEvent;
+import net.trainingsoase.bedwars.team.BedwarsTeam;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -13,8 +18,20 @@ import org.bukkit.event.Listener;
 
 public class MapLoadedHandler implements Listener {
 
+    private final Bedwars bedwars;
+
+    public MapLoadedHandler(Bedwars bedwars) {
+        this.bedwars = bedwars;
+    }
+
     @EventHandler
     public void handleMapLoad(final MapLoadedEvent event) {
-        final World world = event.getWorld();
+        bedwars.runTask(() -> {
+            for (BedwarsTeam team : bedwars.getTeamService().getTeams()) {
+                for (Player player : team.getPlayers()) {
+                    player.teleport(event.getGameMap().getSpawnLocations().get(team.getColorData().toString().toLowerCase()).toLocation());
+                }
+            }
+        });
     }
 }
