@@ -96,7 +96,7 @@ public class Bedwars extends Game {
 
         linearPhaseSeries = new LinearPhaseSeries<>();
         linearPhaseSeries.add(new LobbyPhase(this, this, true));
-        linearPhaseSeries.add(new IngamePhase(this, true));
+        linearPhaseSeries.add(new IngamePhase(this, true, this));
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
 
@@ -210,5 +210,9 @@ public class Bedwars extends Game {
 
     public Teamselector getTeamselector() {
         return teamselector;
+    }
+
+    public LinearPhaseSeries<TimedPhase> getLinearPhaseSeries() {
+        return linearPhaseSeries;
     }
 }

@@ -13,6 +13,7 @@ val CN_VERSION = "3.4.0-RELEASE";
 
 repositories {
     mavenCentral()
+    mavenLocal()
 
     maven {
         url = uri("https://libraries.minecraft.net/")
@@ -67,6 +68,7 @@ dependencies {
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.+")
     compileOnlyApi("net.trainingsoase:Oreo:1.0.+")
     compileOnlyApi("com.grinderwolf:slimeworldmanager-api:2.2.1")
+    implementation("com.github.juliarn:npc-lib:development-SNAPSHOT")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
