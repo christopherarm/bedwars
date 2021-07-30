@@ -47,19 +47,29 @@ public class PlayerJoinHandler implements Listener {
         this.bedwars = bedwars;
         this.phaseSeries = phaseSeries;
 
-        sidebar.put("§8§m----------------", 12);
-        sidebar.put("§7", 11);
-        sidebar.put(" §8➥ §7", 10);
-        sidebar.put(" §b", 9);
-        sidebar.put("§b■ §7Map:", 8);
-        sidebar.put(" §8➥ §b", 7);
-        sidebar.put(" §c", 6);
-        sidebar.put("§e■ §7Coins:", 5);
-        sidebar.put(" §8➥ §e", 4);
-        sidebar.put(" §d", 3);
-        sidebar.put("§a■ §7Ranking:", 2);
-        sidebar.put(" §8➥ §a", 1);
-        sidebar.put("         ", 0);
+        sidebar.put("§8§m----------------", 6);
+        sidebar.put("§7", 5);
+        sidebar.put(" §8➥ §7", 4);
+        sidebar.put(" §b", 3);
+        sidebar.put("§e■ §7Map:", 2);
+        sidebar.put(" §8➥ §e", 1);
+        sidebar.put("§r§8§m----------------", 0);
+
+        /*sidebar.put("§8§m----------------", 14);
+        sidebar.put("§7", 13);
+        sidebar.put(" §7Zeit §8» §600:00", 12);
+        sidebar.put("§d", 11);
+        sidebar.put(" §c❤ §cÖsterreich", 10);
+        sidebar.put(" §c❤ §9Russland", 9);
+        sidebar.put(" §c❤ §aItalien", 8);
+        sidebar.put(" §c❤ §eDeutschland", 7);
+        sidebar.put(" §c❤ §6Spanien", 6);
+        sidebar.put(" §c❤ §fPolen", 5);
+        sidebar.put(" §c❤ §2Portugal", 4);
+        sidebar.put(" §c❤ §bFrankreich", 3);
+        sidebar.put("§8", 2);
+        sidebar.put("§r§8§m----------------", 1);
+        sidebar.put("§c§oBedwars", 0);*/
 
         this.playerExecutor = OaseAPIImpl.INSTANCE.getPlayerExecutor();
 
@@ -89,7 +99,7 @@ public class PlayerJoinHandler implements Listener {
             }
 
             setupPlayer(player);
-            setupScoreboard(player, oasePlayer);
+            setupScoreboard(player);
             setupJoinItems(player, oasePlayer);
         }
     }
@@ -107,14 +117,11 @@ public class PlayerJoinHandler implements Listener {
         player.setFlying(false);
     }
 
-    private void setupScoreboard(Player player, IOasePlayer oasePlayer) {
-        INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§c§lBedwars §8§l︳ §eLobby", sidebar);
+    private void setupScoreboard(Player player) {
+        INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§e§lTrainingsOase", sidebar);
         INSTANCE.updateTeam(player, "Team", " §8➥ §7", "", "§4✖");
         INSTANCE.updateTeam(player, "PreTeam", "§7", "§7■ Team:", "");
-        INSTANCE.updateTeam(player, "Coins", " §8➥ §e", "§e", "" + oasePlayer.getCoins());
-        INSTANCE.updateTeam(player, "Ranking", " §8➥ §a", "§a", "#1");
-        INSTANCE.updateTeam(player, "Map", " §8➥ §b", "§b", "§bTest");
-
+        INSTANCE.updateTeam(player, "Map", " §8➥ §e", "§e", "§eVoting");
     }
 
     private void setupJoinItems(Player player, IOasePlayer oasePlayer) {
