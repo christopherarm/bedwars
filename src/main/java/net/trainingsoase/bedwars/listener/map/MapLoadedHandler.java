@@ -30,6 +30,9 @@ public class MapLoadedHandler implements Listener {
             for (BedwarsTeam team : bedwars.getTeamService().getTeams()) {
                 for (Player player : team.getPlayers()) {
                     player.teleport(event.getGameMap().getSpawnLocations().get(team.getColorData().toString().toLowerCase()).toLocation());
+
+                    player.getInventory().clear();
+                    player.getInventory().setArmorContents(null);
                 }
             }
         });

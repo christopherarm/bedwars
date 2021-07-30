@@ -63,12 +63,12 @@ configurations.all {
 dependencies {
 
     compileOnlyApi("com.mojang:authlib:1.5.21")
-    compileOnlyApi("net.trainingsoase:Hopjes:1.0.+")
+    compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-20210726.214607-3")
     compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.+")
     compileOnlyApi("net.trainingsoase:Oreo:1.0.+")
     compileOnlyApi("com.grinderwolf:slimeworldmanager-api:2.2.1")
-    implementation("com.github.juliarn:npc-lib:development-SNAPSHOT")
+    implementation("com.github.juliarn:npc-lib:2.6-RELEASE")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
