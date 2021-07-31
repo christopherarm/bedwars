@@ -20,6 +20,13 @@ public class IngamePhase extends TimedPhase {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
     protected void onFinish() {
 
     }

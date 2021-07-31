@@ -132,6 +132,10 @@ public class LobbyPhase extends TimedPhase implements Listener {
         } else if(event.getItem().getItemMeta().getDisplayName().equals(
                 bedwars.getLanguageProvider().getTextProvider().getString("item_mapvoting", oasePlayer.getLocale()))) {
             player.openInventory(bedwars.getMapvoting().getMapVotingInventory(oasePlayer.getLocale()));
+
+        } else if(event.getItem().getItemMeta().getDisplayName().equals(
+                bedwars.getLanguageProvider().getTextProvider().getString("item_voting", oasePlayer.getLocale()))) {
+            player.openInventory(bedwars.getVoting().getVotingInventory(oasePlayer.getLocale()));
         }
     }
 
