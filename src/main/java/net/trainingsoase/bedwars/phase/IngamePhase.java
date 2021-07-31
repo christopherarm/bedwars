@@ -62,6 +62,13 @@ public class IngamePhase extends TimedPhase implements Listener {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
     protected void onFinish() {
 
     }

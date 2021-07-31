@@ -62,6 +62,7 @@ public class Bedwars extends Game {
 
     private Mapvoting mapvoting;
     private Teamselector teamselector;
+    private Voting voting;
 
     @Override
     public void onLoad() {
@@ -106,6 +107,7 @@ public class Bedwars extends Game {
 
         mapvoting = new Mapvoting(this);
         teamselector = new Teamselector(this);
+        voting = new Voting(this);
         slimeManager = new SlimeManager(this);
     }
 
@@ -220,5 +222,9 @@ public class Bedwars extends Game {
 
     public LinearPhaseSeries<TimedPhase> getLinearPhaseSeries() {
         return linearPhaseSeries;
+    }
+
+    public Voting getVoting() {
+        return voting;
     }
 }
