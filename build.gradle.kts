@@ -32,6 +32,10 @@ repositories {
     }
 
     maven {
+        url = uri("https://repo.dmulloy2.net/repository/public/")
+    }
+
+    maven {
         url = uri("https://hub.spigotmc.org/nexus/content/groups/public/")
     }
 
@@ -70,6 +74,7 @@ dependencies {
     compileOnlyApi("com.grinderwolf:slimeworldmanager-api:2.2.1")
     implementation("com.github.juliarn:npc-lib:2.6-RELEASE")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
+    compileOnlyApi("com.comphenix.protocol:ProtocolLib:4.7.0")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")

@@ -75,6 +75,8 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
         bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
                 MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
+
+        this.removePhaseListener(this);
     }
 
     @Override

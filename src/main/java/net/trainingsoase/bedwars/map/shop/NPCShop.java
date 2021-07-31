@@ -43,7 +43,7 @@ public class NPCShop {
                     "§e§lShop",
                     shopProperties));
 
-            builder.imitatePlayer(true);
+            builder.imitatePlayer(false);
             builder.lookAtPlayer(true);
             builder.location(loc.toLocation());
             builder.spawnCustomizer((spawnedNPC, player) -> {

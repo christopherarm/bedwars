@@ -8,6 +8,7 @@ import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
 import net.trainingsoase.bedwars.inventory.Mapvoting;
 import net.trainingsoase.bedwars.inventory.Teamselector;
+import net.trainingsoase.bedwars.inventory.Voting;
 import net.trainingsoase.bedwars.listener.map.MapLoadedHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerJoinHandler;
 import net.trainingsoase.bedwars.listener.player.PlayerQuitHandler;
@@ -15,6 +16,7 @@ import net.trainingsoase.bedwars.listener.player.PlayerSpawnLocationHandler;
 import net.trainingsoase.bedwars.listener.protection.ProtectionHandler;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.map.SlimeManager;
+import net.trainingsoase.bedwars.map.shop.Shop;
 import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
@@ -63,6 +65,7 @@ public class Bedwars extends Game {
     private Mapvoting mapvoting;
     private Teamselector teamselector;
     private Voting voting;
+    private Shop shop;
 
     @Override
     public void onLoad() {
@@ -108,6 +111,7 @@ public class Bedwars extends Game {
         mapvoting = new Mapvoting(this);
         teamselector = new Teamselector(this);
         voting = new Voting(this);
+        shop = new Shop(this);
         slimeManager = new SlimeManager(this);
     }
 
@@ -226,5 +230,9 @@ public class Bedwars extends Game {
 
     public Voting getVoting() {
         return voting;
+    }
+
+    public Shop getShop() {
+        return shop;
     }
 }

@@ -1,5 +1,7 @@
 package net.trainingsoase.bedwars.phase;
 
+import com.github.juliarn.npc.event.PlayerNPCInteractEvent;
+import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.map.shop.NPCShop;
@@ -27,6 +29,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
 /**
  * @author byCrypex
  * @version 1.0.0
@@ -34,6 +39,8 @@ import org.bukkit.util.Vector;
  **/
 
 public class IngamePhase extends TimedPhase implements Listener {
+
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
 
     private final Bedwars bedwars;
 
@@ -45,7 +52,7 @@ public class IngamePhase extends TimedPhase implements Listener {
         super("Ingame", game, 20, async);
         this.bedwars = bedwars;
         setPaused(false);
-        this.setCurrentTicks(60);
+        this.setCurrentTicks(3600);
         this.addPhaseListener(this);
         this.spawner = new Spawner(bedwars);
         this.npcShop = new NPCShop(bedwars);
@@ -59,13 +66,10 @@ public class IngamePhase extends TimedPhase implements Listener {
             spawner.startSpawners();
             npcShop.spawnNPCs();
         }, 5);
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+        bedwars.runTaskTimer(() -> {
 
-
+        }, 5, 50);
     }
 
     @Override
@@ -109,7 +113,7 @@ public class IngamePhase extends TimedPhase implements Listener {
 
                     if (bedID == null) return;
 
-                    BedwarsTeam team = getTeamByColor(bedID.split("\\.")[0]);
+                    BedwarsTeam team = getTeamByColor(SPLIT_PATTERN.split(bedID)[0]);
 
                     if (team == null) return;
 
@@ -176,6 +180,16 @@ public class IngamePhase extends TimedPhase implements Listener {
                     return;
                 }
             });
+        }
+    }
+
+    @EventHandler
+    public void handleNPCClick(PlayerNPCInteractEvent event) {
+        final Player player = event.getPlayer();
+        final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
+
+        if(event.getUseAction() == PlayerNPCInteractEvent.EntityUseAction.INTERACT) {
+            player.openInventory(bedwars.getShop().getShopInventory(oasePlayer.getLocale()));
         }
     }
 }
