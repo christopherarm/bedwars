@@ -6,10 +6,13 @@ import net.trainingsoase.bedwars.map.shop.NPCShop;
 import net.trainingsoase.bedwars.map.spawner.Spawner;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.MapUtils;
+import net.trainingsoase.data.OaseAPIImpl;
+import net.trainingsoase.data.model.OasePlayer;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.oreo.location.WrappedLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -19,7 +22,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.util.Vector;
 
 /**
  * @author byCrypex
@@ -124,10 +130,45 @@ public class IngamePhase extends TimedPhase implements Listener {
                             }
                         }
                     }, 3L);
-
                     break;
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void handleDeath(final PlayerDeathEvent event) {
+        final Player player = event.getEntity();
+
+        event.setDeathMessage(null);
+    }
+
+    @EventHandler
+    public void handleMove(final PlayerMoveEvent event) {
+        final Player player = event.getPlayer();
+
+        if(player.getLocation().getY() < 50 && player.getGameMode() == GameMode.SURVIVAL) {
+            OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(player.getUniqueId()).thenAccept(iOasePlayer -> {
+                var deadTeam = bedwars.getTeamService().getTeam(player);
+
+                if(!deadTeam.isPresent()) return;
+
+                if(deadTeam.get().hasBed()) {
+                    Bukkit.getScheduler().runTaskLater(bedwars, () -> {
+                        player.spigot().respawn();
+                        player.setGameMode(GameMode.CREATIVE);
+                        player.teleport(MapHelper.getInstance(bedwars).getGameMap().getSpawnLocations().get(deadTeam.get().getColorData().toString().toLowerCase()).toLocation());
+                        player.setGameMode(GameMode.SURVIVAL);
+                        player.setVelocity(new Vector().zero());
+                        player.getInventory().clear();
+                        player.getInventory().setArmorContents(null);
+                        player.setHealth(20.0D);
+                        player.setFoodLevel(20);
+                        player.setFireTicks(0);
+                    }, 2);
+                    return;
+                }
+            });
         }
     }
 }
