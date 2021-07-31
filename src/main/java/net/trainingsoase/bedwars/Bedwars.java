@@ -169,6 +169,12 @@ public class Bedwars extends Game {
         List<ColorData> colorDataList = new ArrayList<>();
         colorDataList.add(ColorData.RED);
         colorDataList.add(ColorData.BLUE);
+        colorDataList.add(ColorData.LIGHT_GREEN);
+        colorDataList.add(ColorData.YELLOW);
+        colorDataList.add(ColorData.GREEN);
+        colorDataList.add(ColorData.GOLD);
+        colorDataList.add(ColorData.WHITE);
+        colorDataList.add(ColorData.AQUA);
 
         var randomTeam = Teams.VALUES[rnd];
         randomTeam.setColorData(colorDataList.get(position));

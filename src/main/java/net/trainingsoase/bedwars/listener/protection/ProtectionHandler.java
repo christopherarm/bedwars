@@ -4,6 +4,7 @@ import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -56,6 +57,7 @@ public class ProtectionHandler implements Listener {
         //TODO: add Spectator handling
         if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
                 || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
+            Bukkit.broadcastMessage("block break 1 1");
             event.setCancelled(true);
         }
     }
