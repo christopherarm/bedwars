@@ -56,8 +56,8 @@ public class PlayerQuitHandler implements Listener {
             bedwars.getTeamService().getTeam(player).ifPresent(bedwarsTeam -> bedwarsTeam.removePlayer(player));
             bedwars.getTeamselector().updateTeamSelector();
             bedwars.getMapvoting().removePlayerFromVoting(player);
-            bedwars.getVoting().onVotes.remove(player);
-            bedwars.getVoting().offVotes.remove(player);
+            bedwars.getVoting().getOnVotes().remove(player);
+            bedwars.getVoting().getOffVotes().remove(player);
             bedwars.getVoting().updateVotingInventory();
             return;
         }

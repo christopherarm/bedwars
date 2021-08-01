@@ -1,5 +1,7 @@
 package net.trainingsoase.bedwars.phase;
 
+import at.rxcki.strigiformes.message.MessageCache;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.github.juliarn.npc.event.PlayerNPCInteractEvent;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
@@ -7,6 +9,7 @@ import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.map.shop.NPCShop;
 import net.trainingsoase.bedwars.map.spawner.Spawner;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
+import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.bedwars.utils.MapUtils;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.data.model.OasePlayer;
@@ -24,11 +27,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -68,8 +75,18 @@ public class IngamePhase extends TimedPhase implements Listener {
         }, 5);
 
         bedwars.runTaskTimer(() -> {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(onlinePlayer.getUniqueId()).thenAccept(iOasePlayer -> {
+                    bedwars.getTeamService().getTeam(onlinePlayer).ifPresent(bedwarsTeam -> {
+                        ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(bedwars.getLanguageProvider().getTextProvider()
+                                .format("game_actionbar", iOasePlayer.getLocale(),
+                                        bedwars.getLanguageProvider().getTextProvider()
+                                                .format(bedwarsTeam.getIdentifier(), iOasePlayer.getLocale(), bedwarsTeam.getColorData().getChatColor()))));
+                    });
 
-        }, 5, 50);
+                });
+            }
+        }, 5, 40);
     }
 
     @Override
@@ -154,32 +171,42 @@ public class IngamePhase extends TimedPhase implements Listener {
         event.setDeathMessage(null);
     }
 
+    private final List<Player> falldownPlayers = new ArrayList<>();
+
     @EventHandler
     public void handleMove(final PlayerMoveEvent event) {
         final Player player = event.getPlayer();
 
-        if(player.getLocation().getY() < 50 && player.getGameMode() == GameMode.SURVIVAL) {
+        if(player.getLocation().getY() < 50) {
             OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(player.getUniqueId()).thenAccept(iOasePlayer -> {
                 var deadTeam = bedwars.getTeamService().getTeam(player);
 
                 if(!deadTeam.isPresent()) return;
 
                 if(deadTeam.get().hasBed()) {
-                    Bukkit.getScheduler().runTaskLater(bedwars, () -> {
-                        player.spigot().respawn();
-                        player.setGameMode(GameMode.CREATIVE);
-                        player.teleport(MapHelper.getInstance(bedwars).getGameMap().getSpawnLocations().get(deadTeam.get().getColorData().toString().toLowerCase()).toLocation());
-                        player.setGameMode(GameMode.SURVIVAL);
-                        player.setVelocity(new Vector().zero());
-                        player.getInventory().clear();
-                        player.getInventory().setArmorContents(null);
-                        player.setHealth(20.0D);
-                        player.setFoodLevel(20);
-                        player.setFireTicks(0);
-                    }, 2);
+                    falldownPlayers.add(player);
+                    player.getInventory().clear();
+                    player.getInventory().setArmorContents(null);
+                    player.teleport(MapHelper.getInstance(bedwars).getGameMap().getSpawnLocations().get(deadTeam.get().getColorData().toString().toLowerCase()).toLocation());
+                    player.setVelocity(new Vector().zero());
+                    player.setHealth(20.0D);
+                    player.setFoodLevel(20);
+                    player.setFireTicks(0);
                     return;
                 }
             });
+        }
+    }
+
+    @EventHandler
+    public void handleEntityDamage(final EntityDamageEvent event) {
+        if(event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            final Player player = (Player) event.getEntity();
+            if(falldownPlayers.contains(player)) {
+                event.setDamage(0);
+                event.setCancelled(true);
+                falldownPlayers.remove(player);
+            }
         }
     }
 

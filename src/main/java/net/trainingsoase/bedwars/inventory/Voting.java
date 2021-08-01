@@ -31,9 +31,9 @@ public class Voting {
 
     private final Bedwars bedwars;
 
-    public final List<Player> onVotes;
+    private final List<Player> onVotes;
 
-    public final List<Player> offVotes;
+    private final List<Player> offVotes;
 
     private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
             .setColor(DyeColor.GRAY).setEmptyName().build();
@@ -104,5 +104,13 @@ public class Voting {
 
     public Inventory getVotingInventory(Locale locale) {
         return votingInventoryBuilder.getInventory(locale);
+    }
+
+    public List<Player> getOnVotes() {
+        return onVotes;
+    }
+
+    public List<Player> getOffVotes() {
+        return offVotes;
     }
 }
