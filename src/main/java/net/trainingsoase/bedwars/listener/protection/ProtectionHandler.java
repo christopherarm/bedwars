@@ -57,7 +57,6 @@ public class ProtectionHandler implements Listener {
         //TODO: add Spectator handling
         if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
                 || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
-            Bukkit.broadcastMessage("block break 1 1");
             event.setCancelled(true);
         }
     }
