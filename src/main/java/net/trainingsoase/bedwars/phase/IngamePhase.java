@@ -110,28 +110,27 @@ public class IngamePhase extends TimedPhase implements Listener {
         Bukkit.getOnlinePlayers().forEach(player -> {
             ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + convertToSeconds(getCurrentTicks()));
         });
-
     }
 
     private void setIngameScoreboard() {
         final HashMap<String, Integer> sidebar = new HashMap<>();
-        sidebar.put("§8§m----------------", 14);
-        sidebar.put("§7§r", 13);
-        sidebar.put("§d", 12);
-        sidebar.put("§d§r", 11);
-        sidebar.put(ColorData.RED.getChatColor().toString(), 10);
-        sidebar.put(ColorData.BLUE.getChatColor().toString(), 9);
-        sidebar.put(ColorData.LIGHT_GREEN.getChatColor().toString(), 8);
-        sidebar.put(ColorData.YELLOW.getChatColor().toString(), 7);
-        sidebar.put(ColorData.GREEN.getChatColor().toString(), 6);
-        sidebar.put(ColorData.GOLD.getChatColor().toString(), 5);
-        sidebar.put(ColorData.WHITE.getChatColor().toString(), 4);
-        sidebar.put(ColorData.AQUA.getChatColor().toString(), 3);
+
+        int counter = 3;
+
+        for (BedwarsTeam team : bedwars.getTeamService().getTeams()) {
+            sidebar.putIfAbsent(team.getColorData().getChatColor().toString(), counter);
+            counter++;
+        }
+
+        sidebar.put("§8§m----------------", counter+4);
+        sidebar.put("§7§r", counter+3);
+        sidebar.put("§d", counter+2);
+        sidebar.put("§d§r", counter+1);
         sidebar.put("§8", 2);
         sidebar.put("§r§8§m----------------", 1);
         sidebar.put("§c§oBedwars", 0);
 
-        Bukkit.getOnlinePlayers().forEach(player -> {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(player.getUniqueId()).thenAccept(iOasePlayer -> {
                 ScoreboardAPI.INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§e§lTrainingsOase", sidebar);
                 ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + convertToSeconds(getCurrentTicks()));
@@ -139,15 +138,15 @@ public class IngamePhase extends TimedPhase implements Listener {
                 List<BedwarsTeam> teams = bedwars.getTeamService().getTeams();
 
                 for (BedwarsTeam team : teams) {
-                    ScoreboardAPI.INSTANCE.updateTeam(player, team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§6" + team.getCurrentSize() + "§7) §c❤ ",
+                    String active = team.getPlayers().size() == 0 ? "§7" : "§c";
+                    ScoreboardAPI.INSTANCE.updateTeam(player, team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§6" + team.getCurrentSize() + "§7) " + active + "❤ ",
                             bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier()
                                     , iOasePlayer.getLocale()
                                     , team.getColorData().getChatColor()));
+
                 }
             });
-        });
-
-
+        }
     }
 
     private String convertToSeconds(int time) {
