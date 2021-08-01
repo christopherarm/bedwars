@@ -16,6 +16,7 @@ import net.trainingsoase.bedwars.listener.player.PlayerSpawnLocationHandler;
 import net.trainingsoase.bedwars.listener.protection.ProtectionHandler;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.map.SlimeManager;
+import net.trainingsoase.bedwars.map.shop.Shop;
 import net.trainingsoase.bedwars.phase.EndingPhase;
 import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
@@ -64,6 +65,7 @@ public class Bedwars extends Game {
     private Mapvoting mapvoting;
     private Teamselector teamselector;
     private Voting voting;
+    private Shop shop;
 
     @Override
     public void onLoad() {
@@ -98,7 +100,7 @@ public class Bedwars extends Game {
 
         linearPhaseSeries = new LinearPhaseSeries<>();
         linearPhaseSeries.add(new LobbyPhase(this, this, true));
-        linearPhaseSeries.add(new IngamePhase(this, true));
+        linearPhaseSeries.add(new IngamePhase(this, true, this));
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
 
@@ -109,6 +111,7 @@ public class Bedwars extends Game {
         mapvoting = new Mapvoting(this);
         teamselector = new Teamselector(this);
         voting = new Voting(this);
+        shop = new Shop(this);
         slimeManager = new SlimeManager(this);
     }
 
@@ -172,6 +175,12 @@ public class Bedwars extends Game {
         List<ColorData> colorDataList = new ArrayList<>();
         colorDataList.add(ColorData.RED);
         colorDataList.add(ColorData.BLUE);
+        colorDataList.add(ColorData.LIGHT_GREEN);
+        colorDataList.add(ColorData.YELLOW);
+        colorDataList.add(ColorData.GREEN);
+        colorDataList.add(ColorData.GOLD);
+        colorDataList.add(ColorData.WHITE);
+        colorDataList.add(ColorData.AQUA);
 
         var randomTeam = Teams.VALUES[rnd];
         randomTeam.setColorData(colorDataList.get(position));
@@ -215,7 +224,15 @@ public class Bedwars extends Game {
         return teamselector;
     }
 
+    public LinearPhaseSeries<TimedPhase> getLinearPhaseSeries() {
+        return linearPhaseSeries;
+    }
+
     public Voting getVoting() {
         return voting;
+    }
+
+    public Shop getShop() {
+        return shop;
     }
 }

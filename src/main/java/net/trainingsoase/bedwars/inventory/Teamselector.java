@@ -22,6 +22,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import static net.trainingsoase.oreo.scoreboard.ScoreboardAPI.INSTANCE;
+
 /**
  * @author byCrypex
  * @version 1.0.0
@@ -93,6 +95,13 @@ public class Teamselector {
             }
 
             bedwarsTeam.addPlayer(player);
+
+            INSTANCE.updateTeam(player, "PreTeam", "§7", bedwarsTeam.getColorData().getChatColor() + "■ §7Team:", "");
+
+            INSTANCE.updateTeam(player, "Team", " §8➥ §7", "",
+                    bedwars.getLanguageProvider().getTextProvider().format(bedwarsTeam.getIdentifier(), oasePlayer.getLocale(), bedwarsTeam.getColorData().getChatColor()));
+
+
             bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "team_now_in_team",
                             bedwars.getLanguageProvider().getTextProvider()
                                     .format(bedwarsTeam.getIdentifier(), oasePlayer.getLocale(), bedwarsTeam.getColorData().getChatColor()));

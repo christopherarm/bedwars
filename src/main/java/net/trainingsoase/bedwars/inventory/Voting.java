@@ -105,4 +105,12 @@ public class Voting {
     public Inventory getVotingInventory(Locale locale) {
         return votingInventoryBuilder.getInventory(locale);
     }
+
+    public List<Player> getOnVotes() {
+        return onVotes;
+    }
+
+    public List<Player> getOffVotes() {
+        return offVotes;
+    }
 }

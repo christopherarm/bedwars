@@ -13,6 +13,7 @@ import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.hopjes.api.teams.TeamService;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -74,10 +75,12 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
         bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
                 MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
+
+        this.removePhaseListener(this);
     }
 
     @Override
-    protected void onTick() {
+    public void onUpdate() {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setLevel(getCurrentTicks());
             final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());

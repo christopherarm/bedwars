@@ -4,6 +4,7 @@ import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.api.MapLoadedEvent;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -30,6 +31,10 @@ public class MapLoadedHandler implements Listener {
             for (BedwarsTeam team : bedwars.getTeamService().getTeams()) {
                 for (Player player : team.getPlayers()) {
                     player.teleport(event.getGameMap().getSpawnLocations().get(team.getColorData().toString().toLowerCase()).toLocation());
+
+                    player.getInventory().clear();
+                    player.getInventory().setArmorContents(null);
+                    player.setGameMode(GameMode.SURVIVAL);
                 }
             }
         });

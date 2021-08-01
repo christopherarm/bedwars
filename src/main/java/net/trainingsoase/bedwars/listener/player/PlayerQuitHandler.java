@@ -53,7 +53,12 @@ public class PlayerQuitHandler implements Listener {
                 bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, cache.getMessage(iOasePlayer.getLocale()));
             }
 
-            //TODO: remove from Mapvoting, Teamsystem and Voting
+            bedwars.getTeamService().getTeam(player).ifPresent(bedwarsTeam -> bedwarsTeam.removePlayer(player));
+            bedwars.getTeamselector().updateTeamSelector();
+            bedwars.getMapvoting().removePlayerFromVoting(player);
+            bedwars.getVoting().getOnVotes().remove(player);
+            bedwars.getVoting().getOffVotes().remove(player);
+            bedwars.getVoting().updateVotingInventory();
             return;
         }
 

@@ -1,10 +1,12 @@
 package net.trainingsoase.bedwars.listener.player;
 
 import at.rxcki.strigiformes.message.MessageCache;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.api.player.IPlayerExecutor;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.item.JoinItems;
+import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
@@ -47,13 +49,14 @@ public class PlayerJoinHandler implements Listener {
         this.bedwars = bedwars;
         this.phaseSeries = phaseSeries;
 
-        sidebar.put("§8§m----------------", 6);
-        sidebar.put("§7", 5);
-        sidebar.put(" §8➥ §7", 4);
-        sidebar.put(" §b", 3);
-        sidebar.put("§e■ §7Map:", 2);
-        sidebar.put(" §8➥ §e", 1);
-        sidebar.put("§r§8§m----------------", 0);
+        sidebar.put("§8§m----------------", 7);
+        sidebar.put("§7", 6);
+        sidebar.put(" §8➥ §7", 5);
+        sidebar.put(" §b", 4);
+        sidebar.put("§e■ §7Map:", 3);
+        sidebar.put(" §8➥ §e", 2);
+        sidebar.put("§r§8§m----------------", 1);
+        sidebar.put("§c§oBedwars", 0);
 
         /*sidebar.put("§8§m----------------", 14);
         sidebar.put("§7", 13);
@@ -75,7 +78,7 @@ public class PlayerJoinHandler implements Listener {
 
         this.joinItems = ((LobbyPhase) phaseSeries.getCurrentPhase()).getJoinItems();
 
-        //sendCountDownBar();
+        sendCountDownBar();
     }
 
     @EventHandler
@@ -142,12 +145,16 @@ public class PlayerJoinHandler implements Listener {
             var oneCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_one");
 
             if(onlinePlayers < startSize) {
-                for (IOasePlayer iOasePlayer : this.playerExecutor.getCurrentOnlinePlayers()) {
-                    if (sizeNeeded == 1) {
-                        bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, oneCache.getMessage(iOasePlayer.getLocale()));
-                    } else {
-                        bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, moreCache.getMessage(iOasePlayer.getLocale()));
-                    }
+
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(onlinePlayer.getUniqueId()).thenAccept(iOasePlayer -> {
+                        if (sizeNeeded == 1) {
+                            ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(
+                                    bedwars.getLanguageProvider().getTextProvider().format(oneCache.getTextData(), iOasePlayer.getLocale())));
+                        } else {
+                            ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(
+                                    bedwars.getLanguageProvider().getTextProvider().format(moreCache.getTextData(), iOasePlayer.getLocale())));                        }
+                    });
                 }
             }
         }, 0, 40);

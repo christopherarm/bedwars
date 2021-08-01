@@ -85,6 +85,16 @@ public class Mapvoting {
         mapInventoryBuilder.invalidateDataLayout();
     }
 
+    public void removePlayerFromVoting(Player player) {
+        for (VoteMap value : mapVotes.values()) {
+            if(value.getPlayers().remove(player)) {
+                value.removeVote();
+                updateMapInventory();
+                break;
+            }
+        }
+    }
+
     private Consumer<InventoryClickEvent> handleMapClick() {
         return event -> {
             final Player player = (Player) event.getWhoClicked();
