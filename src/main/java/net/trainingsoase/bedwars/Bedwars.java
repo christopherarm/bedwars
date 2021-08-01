@@ -6,6 +6,7 @@ import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.trainingsoase.api.database.AbstractSentryConnector;
 import net.trainingsoase.api.database.sentry.Environment;
 import net.trainingsoase.api.database.sentry.SentryConnector;
+import net.trainingsoase.bedwars.commands.StartCommand;
 import net.trainingsoase.bedwars.inventory.Mapvoting;
 import net.trainingsoase.bedwars.inventory.Teamselector;
 import net.trainingsoase.bedwars.inventory.Voting;
@@ -35,6 +36,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import javax.sql.rowset.serial.SerialArray;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
@@ -105,6 +107,7 @@ public class Bedwars extends Game {
         linearPhaseSeries.start();
 
         registerListeners();
+        registerCommands();
         setupGame();
         createTeams();
 
@@ -151,6 +154,10 @@ public class Bedwars extends Game {
         getServer().getPluginManager().registerEvents(new NoWeatherListener(), this);
         getServer().getPluginManager().registerEvents(new NoLeaveDecayListener(), this);
         getServer().getPluginManager().registerEvents(new NoItemFrameBreakListener(), this);
+    }
+
+    private void registerCommands() {
+        getCommand("start").setExecutor(new StartCommand(this));
     }
 
     private void createTeams() {

@@ -1,6 +1,5 @@
 package net.trainingsoase.bedwars.phase;
 
-import at.rxcki.strigiformes.message.MessageCache;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.github.juliarn.npc.event.PlayerNPCInteractEvent;
 import net.trainingsoase.api.player.IOasePlayer;
@@ -12,17 +11,14 @@ import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.bedwars.utils.MapUtils;
 import net.trainingsoase.data.OaseAPIImpl;
-import net.trainingsoase.data.model.OasePlayer;
 import net.trainingsoase.hopjes.Game;
-import net.trainingsoase.hopjes.api.ColorData;
 import net.trainingsoase.hopjes.api.phase.TickDirection;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.oreo.location.WrappedLocation;
 import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -31,6 +27,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -42,7 +39,6 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -61,6 +57,8 @@ public class IngamePhase extends TimedPhase implements Listener {
 
     private NPCShop npcShop;
 
+    private final List<Block> breakBlocks;
+
     public IngamePhase(Game game, boolean async, Bedwars bedwars) {
         super("Ingame", game, 20, async);
         this.bedwars = bedwars;
@@ -70,6 +68,7 @@ public class IngamePhase extends TimedPhase implements Listener {
         this.setTickDirection(TickDirection.UP);
         this.spawner = new Spawner(bedwars);
         this.npcShop = new NPCShop(bedwars);
+        this.breakBlocks = new ArrayList<>();
     }
 
     @Override
@@ -92,7 +91,6 @@ public class IngamePhase extends TimedPhase implements Listener {
                                     bedwars.getLanguageProvider().getTextProvider()
                                             .format(bedwarsTeam.getIdentifier(), iOasePlayer.getLocale(), bedwarsTeam.getColorData().getChatColor()),
                                     bedwars.getLanguageProvider().getTextProvider().format(gold, iOasePlayer.getLocale())))));
-
                 });
             }
         }, 5, 40);
@@ -143,7 +141,6 @@ public class IngamePhase extends TimedPhase implements Listener {
                             bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier()
                                     , iOasePlayer.getLocale()
                                     , team.getColorData().getChatColor()));
-
                 }
             });
         }
@@ -175,9 +172,22 @@ public class IngamePhase extends TimedPhase implements Listener {
     }
 
     @EventHandler
+    public void handleBlockPlace(final BlockPlaceEvent event) {
+        breakBlocks.add(event.getBlock());
+    }
+
+    @EventHandler
     public void handleBlockBreak(final BlockBreakEvent event) {
+        final Player player = event.getPlayer();
+
+        if(event.getBlock().getType() != Material.BED_BLOCK) {
+            if(!breakBlocks.contains(event.getBlock())) {
+                event.setCancelled(true);
+            }
+            return;
+        }
+
         if (event.getBlock().getType() == Material.BED_BLOCK) {
-            final Player player = event.getPlayer();
 
             var gameMap = MapHelper.getInstance(bedwars).getGameMap();
             var bedLocation = gameMap.getBedLocations();

@@ -88,10 +88,11 @@ dependencies {
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.+")
     compileOnlyApi("net.trainingsoase:Oreo:1.0.+")
     compileOnlyApi("com.grinderwolf:slimeworldmanager-api:2.2.1")
+    compileOnlyApi("com.comphenix.protocol:ProtocolLib:4.7.0")
+    compileOnlyApi("net.trainingsoase:spectator:0.0.0-SNAPSHOT")
+    compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-20210801.171404-4")
     implementation("com.github.juliarn:npc-lib:2.6-RELEASE")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
-    compileOnlyApi("com.comphenix.protocol:ProtocolLib:4.7.0")
-    compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-20210801.171404-4")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")
@@ -115,6 +116,7 @@ publishing {
             from(components["java"])
         }
     }
+
     repositories {
         maven {
             url = uri("https://gitlab.madfix.de/api/v4/projects/176/packages/maven")
@@ -136,6 +138,9 @@ bukkit {
     main = "net.trainingsoase.bedwars.Bedwars"
     author = "TrainingsOase"
     depend = listOf("OaseAPI","Hopjes", "Oreo", "CloudNet-Bridge")
+    commands {
+        register("start")
+    }
 
 }
 
