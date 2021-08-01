@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import io.sentry.Sentry;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +26,7 @@ public class ActionbarAPI {
         try {
             protocolManager.sendServerPacket(player, chatPacket);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            Sentry.captureException(e);
         }
     }
 }
