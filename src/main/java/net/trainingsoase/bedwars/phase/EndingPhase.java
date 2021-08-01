@@ -18,12 +18,12 @@ public class EndingPhase extends TimedPhase {
     }
 
     @Override
-    protected void onFinish() {
+    public void onUpdate() {
 
     }
 
     @Override
-    protected void onTick() {
+    protected void onFinish() {
 
     }
 }

@@ -38,6 +38,26 @@ repositories {
     maven {
         url = uri("https://hub.spigotmc.org/nexus/content/groups/public/")
     }
+    maven {
+        url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
+        name = "GitLab"
+
+        if (System.getenv("CI_JOB_TOKEN") == null) {
+            credentials(HttpHeaderCredentials::class) {
+                name = "Private-Token"
+                value = property("gitlabToken") as String
+            }
+        } else {
+            credentials(HttpHeaderCredentials::class) {
+                name = "Job-Token"
+                value = System.getenv("CI_JOB_TOKEN")
+            }
+        }
+
+        authentication {
+            create<HttpHeaderAuthentication>("header")
+        }
+    }
 
     maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
@@ -60,14 +80,10 @@ repositories {
         }
     }
 }
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor(0, TimeUnit.MILLISECONDS)
-}
 
 dependencies {
 
     compileOnlyApi("com.mojang:authlib:1.5.21")
-    compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-20210726.214607-3")
     compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.+")
     compileOnlyApi("net.trainingsoase:Oreo:1.0.+")
@@ -75,6 +91,7 @@ dependencies {
     implementation("com.github.juliarn:npc-lib:2.6-RELEASE")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
     compileOnlyApi("com.comphenix.protocol:ProtocolLib:4.7.0")
+    compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-20210801.171404-4")
 
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")

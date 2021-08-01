@@ -80,7 +80,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
     }
 
     @Override
-    protected void onTick() {
+    public void onUpdate() {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setLevel(getCurrentTicks());
             final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());

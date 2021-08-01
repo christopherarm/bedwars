@@ -14,8 +14,11 @@ import net.trainingsoase.bedwars.utils.MapUtils;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.data.model.OasePlayer;
 import net.trainingsoase.hopjes.Game;
+import net.trainingsoase.hopjes.api.ColorData;
+import net.trainingsoase.hopjes.api.phase.TickDirection;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.oreo.location.WrappedLocation;
+import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -31,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -59,7 +63,9 @@ public class IngamePhase extends TimedPhase implements Listener {
         super("Ingame", game, 20, async);
         this.bedwars = bedwars;
         setPaused(false);
-        this.setCurrentTicks(3600);
+        this.setCurrentTicks(0);
+        this.setEndTicks(3600);
+        this.setTickDirection(TickDirection.UP);
         this.addPhaseListener(this);
         this.spawner = new Spawner(bedwars);
         this.npcShop = new NPCShop(bedwars);
@@ -87,15 +93,59 @@ public class IngamePhase extends TimedPhase implements Listener {
                 });
             }
         }, 5, 40);
+
+        setIngameScoreboard();
     }
 
     @Override
     protected void onFinish() {
-
+        Bukkit.shutdown();
     }
 
     @Override
-    protected void onTick() {
+    public void onUpdate() {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§6", " §7Zeit §8» ", convertToSeconds(getCurrentTicks()));
+        });
+
+    }
+
+    private void setIngameScoreboard() {
+        final HashMap<String, Integer> sidebar = new HashMap<>();
+        sidebar.put("§8§m----------------", 8);
+        sidebar.put("§7§r", 7);
+        sidebar.put("§6", 6);
+        sidebar.put("§d§r", 5);
+        sidebar.put(ColorData.RED.getChatColor().toString(), 4);
+        sidebar.put(ColorData.BLUE.getChatColor().toString(), 3);
+        sidebar.put("§8", 2);
+        sidebar.put("§r§8§m----------------", 1);
+        sidebar.put("§c§oBedwars", 0);
+
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(player.getUniqueId()).thenAccept(iOasePlayer -> {
+                ScoreboardAPI.INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§e§lTrainingsOase", sidebar);
+                ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§6", " §7Zeit §8» ", convertToSeconds(getCurrentTicks()));
+
+                List<BedwarsTeam> teams = bedwars.getTeamService().getTeams();
+
+                for (BedwarsTeam team : teams) {
+                    ScoreboardAPI.INSTANCE.updateTeam(player, team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§6" + team.getCurrentSize() + "§7) §c❤ ",
+                            bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier()
+                                    , iOasePlayer.getLocale()
+                                    , team.getColorData().getChatColor()));
+                }
+            });
+        });
+
+
+    }
+
+    private String convertToSeconds(int time) {
+        int stunden = time / 3600;
+        int minuten = (time - stunden * 3600) / 60;
+        int sekunden = time - stunden * 3600 - minuten * 60;
+        return String.format("%02d:%02d", minuten, sekunden);
     }
 
     private BedwarsTeam getTeamByColor(String color) {
