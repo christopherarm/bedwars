@@ -47,7 +47,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
             setPaused(false);
 
             if(Bukkit.getOnlinePlayers().size() == bedwars.getMode().getPlayers()) {
-                setCurrentTicks(1);
+                setCurrentTicks(6);
             }
         }
     }
