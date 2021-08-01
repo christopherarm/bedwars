@@ -1,5 +1,7 @@
 package net.trainingsoase.bedwars.phase;
 
+import at.rxcki.strigiformes.message.MessageCache;
+import at.rxcki.strigiformes.text.TextData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.github.juliarn.npc.event.PlayerNPCInteractEvent;
 import net.trainingsoase.api.player.IOasePlayer;
@@ -18,6 +20,7 @@ import net.trainingsoase.oreo.location.WrappedLocation;
 import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -179,6 +182,7 @@ public class IngamePhase extends TimedPhase implements Listener {
     @EventHandler
     public void handleBlockBreak(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
+        final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
 
         if(event.getBlock().getType() != Material.BED_BLOCK) {
             if(!breakBlocks.contains(event.getBlock())) {
@@ -203,19 +207,32 @@ public class IngamePhase extends TimedPhase implements Listener {
                     if (team == null) return;
 
                     if (team.getPlayers().contains(player)) {
-                        player.sendMessage("Nicht selber zerstören");
+                        bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "bed_cant_own");
                         event.setCancelled(true);
                         return;
                     }
 
                     if (team.getCurrentSize() == 0) {
-                        player.sendMessage("Team existiert nicht");
+                        bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "bed_team_already_destroyed",
+                                bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier(), oasePlayer.getLocale()));
                         event.setCancelled(true);
                         return;
                     }
 
                     team.setHasBed(false);
-                    player.sendMessage("Du hast das Bett von " + team.getIdentifier() + " zerstört");
+
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(onlinePlayer.getUniqueId()).thenAccept(iOasePlayer -> {
+                            bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, "bed_destroyed_by_you",
+                                    bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier(), iOasePlayer.getLocale(), team.getColorData().getChatColor()));
+                            onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.WITHER_DEATH, 1f, 1f);
+
+                            ScoreboardAPI.INSTANCE.updateTeam(player, team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§6" + team.getCurrentSize() + "§7) ❤ ",
+                                    bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier()
+                                            , iOasePlayer.getLocale()
+                                            , team.getColorData().getChatColor()));
+                        });
+                    }
 
                     Bukkit.getScheduler().runTaskLater(bedwars, () -> {
                         for (Entity ent : event.getBlock().getWorld().getEntities()) {
