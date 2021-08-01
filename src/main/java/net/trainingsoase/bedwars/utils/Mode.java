@@ -9,7 +9,7 @@ package net.trainingsoase.bedwars.utils;
 public enum Mode {
 
     BW2x1("2x1", 0,2, 2, 2, new int[]{11, 15}),
-    BW2x2("2x2", 0,4, 2, 3, new int[]{12, 16}),
+    BW2x2("2x2", 0,4, 2, 3, new int[]{11, 15}),
     BW4x1("4x1", 1,4, 4, 3, new int[]{4, 12, 14, 22}),
     BW4x2("4x2", 1,8, 4, 4, new int[]{4, 12, 14, 22}),
     BW8x1("8x1", 2,8, 8, 4, new int[]{2, 6, 10, 12, 14, 16, 20, 24}),
