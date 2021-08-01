@@ -39,7 +39,6 @@ public class LobbyPhase extends TimedPhase implements Listener {
         this.bedwars = bedwars;
         this.setPaused(true);
         this.setCurrentTicks(61);
-        this.addPhaseListener(this);
         this.joinItems = new JoinItems(bedwars.getLanguageProvider());
     }
 

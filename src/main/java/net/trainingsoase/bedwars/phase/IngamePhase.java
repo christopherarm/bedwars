@@ -22,6 +22,7 @@ import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -32,6 +33,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -66,7 +68,6 @@ public class IngamePhase extends TimedPhase implements Listener {
         this.setCurrentTicks(0);
         this.setEndTicks(3600);
         this.setTickDirection(TickDirection.UP);
-        this.addPhaseListener(this);
         this.spawner = new Spawner(bedwars);
         this.npcShop = new NPCShop(bedwars);
     }
@@ -80,15 +81,17 @@ public class IngamePhase extends TimedPhase implements Listener {
             npcShop.spawnNPCs();
         }, 5);
 
+        String gold = bedwars.getVoting().getOnVotes().size() > bedwars.getVoting().getOffVotes().size() ? "item_on" : "item_off";
+
         bedwars.runTaskTimer(() -> {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(onlinePlayer.getUniqueId()).thenAccept(iOasePlayer -> {
-                    bedwars.getTeamService().getTeam(onlinePlayer).ifPresent(bedwarsTeam -> {
-                        ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(bedwars.getLanguageProvider().getTextProvider()
-                                .format("game_actionbar", iOasePlayer.getLocale(),
-                                        bedwars.getLanguageProvider().getTextProvider()
-                                                .format(bedwarsTeam.getIdentifier(), iOasePlayer.getLocale(), bedwarsTeam.getColorData().getChatColor()))));
-                    });
+                    bedwars.getTeamService().getTeam(onlinePlayer).ifPresent(bedwarsTeam ->
+                            ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(bedwars.getLanguageProvider().getTextProvider()
+                            .format("game_actionbar", iOasePlayer.getLocale(),
+                                    bedwars.getLanguageProvider().getTextProvider()
+                                            .format(bedwarsTeam.getIdentifier(), iOasePlayer.getLocale(), bedwarsTeam.getColorData().getChatColor()),
+                                    bedwars.getLanguageProvider().getTextProvider().format(gold, iOasePlayer.getLocale())))));
 
                 });
             }
@@ -105,19 +108,25 @@ public class IngamePhase extends TimedPhase implements Listener {
     @Override
     public void onUpdate() {
         Bukkit.getOnlinePlayers().forEach(player -> {
-            ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§6", " §7Zeit §8» ", convertToSeconds(getCurrentTicks()));
+            ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + convertToSeconds(getCurrentTicks()));
         });
 
     }
 
     private void setIngameScoreboard() {
         final HashMap<String, Integer> sidebar = new HashMap<>();
-        sidebar.put("§8§m----------------", 8);
-        sidebar.put("§7§r", 7);
-        sidebar.put("§6", 6);
-        sidebar.put("§d§r", 5);
-        sidebar.put(ColorData.RED.getChatColor().toString(), 4);
-        sidebar.put(ColorData.BLUE.getChatColor().toString(), 3);
+        sidebar.put("§8§m----------------", 14);
+        sidebar.put("§7§r", 13);
+        sidebar.put("§d", 12);
+        sidebar.put("§d§r", 11);
+        sidebar.put(ColorData.RED.getChatColor().toString(), 10);
+        sidebar.put(ColorData.BLUE.getChatColor().toString(), 9);
+        sidebar.put(ColorData.LIGHT_GREEN.getChatColor().toString(), 8);
+        sidebar.put(ColorData.YELLOW.getChatColor().toString(), 7);
+        sidebar.put(ColorData.GREEN.getChatColor().toString(), 6);
+        sidebar.put(ColorData.GOLD.getChatColor().toString(), 5);
+        sidebar.put(ColorData.WHITE.getChatColor().toString(), 4);
+        sidebar.put(ColorData.AQUA.getChatColor().toString(), 3);
         sidebar.put("§8", 2);
         sidebar.put("§r§8§m----------------", 1);
         sidebar.put("§c§oBedwars", 0);
@@ -125,7 +134,7 @@ public class IngamePhase extends TimedPhase implements Listener {
         Bukkit.getOnlinePlayers().forEach(player -> {
             OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(player.getUniqueId()).thenAccept(iOasePlayer -> {
                 ScoreboardAPI.INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§e§lTrainingsOase", sidebar);
-                ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§6", " §7Zeit §8» ", convertToSeconds(getCurrentTicks()));
+                ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + convertToSeconds(getCurrentTicks()));
 
                 List<BedwarsTeam> teams = bedwars.getTeamService().getTeams();
 
@@ -261,12 +270,43 @@ public class IngamePhase extends TimedPhase implements Listener {
     }
 
     @EventHandler
-    public void handleNPCClick(PlayerNPCInteractEvent event) {
+    public void handleNPCClick(final PlayerNPCInteractEvent event) {
         final Player player = event.getPlayer();
         final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
 
         if(event.getUseAction() == PlayerNPCInteractEvent.EntityUseAction.INTERACT) {
             player.openInventory(bedwars.getShop().getShopInventory(oasePlayer.getLocale()));
         }
+    }
+
+    @EventHandler
+    public void handleChat(final AsyncPlayerChatEvent event) {
+        final Player player = event.getPlayer();
+
+        String msg = event.getMessage().replace("%", "%%");
+        bedwars.getTeamService().getTeam(player).ifPresent(team -> {
+            msg.replaceAll("%", "%%");
+
+            if(bedwars.getMode().getPlayers() / bedwars.getMode().getTeams() == 1) {
+                for (Player all : Bukkit.getOnlinePlayers()) {
+                    all.sendMessage("§8§l「§a§lAll§8§l」" + team.getColorData().getChatColor() + player.getDisplayName() + " §8» §7" + msg.replace("@a", "").replace("@all", ""));
+                    event.setCancelled(true);
+                }
+                return;
+            }
+
+            if(msg.startsWith("@a") || msg.startsWith("@all")) {
+                for (Player all : Bukkit.getOnlinePlayers()) {
+                    all.sendMessage("§8§l「§a§lAll§8§l」" + team.getColorData().getChatColor() + player.getDisplayName() + " §8» §7"+ msg.replace("@all", "").replace("@a", ""));
+                    event.setCancelled(true);
+                }
+                return;
+            }
+
+            for (Player all : team.getPlayers()) {
+                all.sendMessage("§8§l「" + team.getColorData().getChatColor() + "Team§8§l」§7" + player.getDisplayName() + " §8» §7" + msg);
+                event.setCancelled(true);
+            }
+        });
     }
 }
