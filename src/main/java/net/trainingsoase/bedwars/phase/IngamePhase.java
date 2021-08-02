@@ -22,6 +22,7 @@ import net.trainingsoase.oreo.inventory.InventoryRows;
 import net.trainingsoase.oreo.location.WrappedLocation;
 import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import net.trainingsoase.oreo.util.Locations;
+import net.trainingsoase.oreo.util.Strings;
 import net.trainingsoase.spectator.SpectatorService;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,7 +36,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -43,7 +43,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,7 +132,7 @@ public class IngamePhase extends TimedPhase implements Listener {
     @Override
     public void onUpdate() {
         Bukkit.getOnlinePlayers().forEach(player -> {
-            ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + convertToSeconds(getCurrentTicks()));
+            ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + Strings.getTimeString(getCurrentTicks()));
         });
     }
 
@@ -158,7 +157,7 @@ public class IngamePhase extends TimedPhase implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(player.getUniqueId()).thenAccept(iOasePlayer -> {
                 ScoreboardAPI.INSTANCE.setSidebar(player, DisplaySlot.SIDEBAR, "§e§lTrainingsOase", sidebar);
-                ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + convertToSeconds(getCurrentTicks()));
+                ScoreboardAPI.INSTANCE.updateTeam(player, "time", "§d", " §7Zeit §8» ", "§6" + Strings.getTimeString(getCurrentTicks()));
 
                 List<BedwarsTeam> teams = bedwars.getTeamService().getTeams();
 
@@ -171,13 +170,6 @@ public class IngamePhase extends TimedPhase implements Listener {
                 }
             });
         }
-    }
-
-    private String convertToSeconds(int time) {
-        int stunden = time / 3600;
-        int minuten = (time - stunden * 3600) / 60;
-        int sekunden = time - stunden * 3600 - minuten * 60;
-        return String.format("%02d:%02d", minuten, sekunden);
     }
 
     private BedwarsTeam getTeamByColor(String color) {
@@ -239,7 +231,7 @@ public class IngamePhase extends TimedPhase implements Listener {
 
                     if (team == null) return;
 
-                    if (team.getPlayers().contains(player)) {
+                    if (team.isIn(player)) {
                         bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "bed_cant_own");
                         event.setCancelled(true);
                         return;
@@ -396,24 +388,16 @@ public class IngamePhase extends TimedPhase implements Listener {
                     player.setFireTicks(0);
                 }, 1);
 
-                if(combatlogManager.getCombatLogMap().containsKey(player)) {
-                    var killer = combatlogManager.getCombatLogMap().get(player).getSecond();
+                var killer = combatlogManager.getCombatLogMap().get(player).getSecond();
+
+                if (killer != null) {
                     bedwars.getTeamService().getTeam(killer).ifPresent(killerTeam -> {
-                        var cache = new MessageCache(bedwars.getLanguageProvider(), "game_player_killed",
-                                team.getColorData().getChatColor() + player.getDisplayName(),
-                                killerTeam.getColorData().getChatColor() + killer.getDisplayName()
-                                );
-                        for (IOasePlayer currentOnlinePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
-                            bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), currentOnlinePlayer, cache.getMessage(currentOnlinePlayer.getLocale()));
-                        }
+                       // player.setDisplayName(team.getColorData().getChatColor() + player.getName());
+                        sendMessage("game_player_killed", team.getColorData().getChatColor() + player.getDisplayName(), killerTeam.getColorData().getChatColor() + killer.getDisplayName());
                     });
                     combatlogManager.getCombatLogMap().remove(player);
                 } else {
-                    var cache = new MessageCache(bedwars.getLanguageProvider(), "game_player_died", team.getColorData().getChatColor() + player.getDisplayName());
-
-                    for (IOasePlayer currentOnlinePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
-                        bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), currentOnlinePlayer, cache.getMessage(currentOnlinePlayer.getLocale()));
-                    }
+                    sendMessage("game_player_died", team.getColorData().getChatColor() + player.getDisplayName());
                 }
                 return;
             }
@@ -434,5 +418,13 @@ public class IngamePhase extends TimedPhase implements Listener {
                 Bukkit.broadcastMessage("Spiel vorbei");
             }
         });
+    }
+
+    private void sendMessage(String key, Object... arguments) {
+        var cache = new MessageCache(bedwars.getLanguageProvider(), key, arguments);
+
+        for (IOasePlayer currentOnlinePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
+            bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), currentOnlinePlayer, cache.getMessage(currentOnlinePlayer.getLocale()));
+        }
     }
 }
