@@ -6,6 +6,7 @@ import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.api.player.IPlayerExecutor;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.item.JoinItems;
+import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
@@ -58,22 +59,6 @@ public class PlayerJoinHandler implements Listener {
         sidebar.put("§r§8§m----------------", 1);
         sidebar.put("§c§oBedwars", 0);
 
-        /*sidebar.put("§8§m----------------", 14);
-        sidebar.put("§7", 13);
-        sidebar.put(" §7Zeit §8» §600:00", 12);
-        sidebar.put("§d", 11);
-        sidebar.put(" §c❤ §cÖsterreich", 10);
-        sidebar.put(" §c❤ §9Russland", 9);
-        sidebar.put(" §c❤ §aItalien", 8);
-        sidebar.put(" §c❤ §eDeutschland", 7);
-        sidebar.put(" §c❤ §6Spanien", 6);
-        sidebar.put(" §c❤ §fPolen", 5);
-        sidebar.put(" §c❤ §2Portugal", 4);
-        sidebar.put(" §c❤ §bFrankreich", 3);
-        sidebar.put("§8", 2);
-        sidebar.put("§r§8§m----------------", 1);
-        sidebar.put("§c§oBedwars", 0);*/
-
         this.playerExecutor = OaseAPIImpl.INSTANCE.getPlayerExecutor();
 
         this.joinItems = ((LobbyPhase) phaseSeries.getCurrentPhase()).getJoinItems();
@@ -104,6 +89,10 @@ public class PlayerJoinHandler implements Listener {
             setupPlayer(player);
             setupScoreboard(player);
             setupJoinItems(player, oasePlayer);
+
+        } else if(phaseSeries.getCurrentPhase() instanceof IngamePhase) {
+            var ingamePhase = (IngamePhase) phaseSeries.getCurrentPhase();
+            ingamePhase.getSpectatorService().add(player);
         }
     }
 

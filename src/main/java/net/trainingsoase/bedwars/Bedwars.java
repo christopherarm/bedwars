@@ -3,9 +3,9 @@ package net.trainingsoase.bedwars;
 import at.rxcki.strigiformes.color.ColorRegistry;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import de.dytanic.cloudnet.wrapper.Wrapper;
-import net.trainingsoase.api.database.AbstractSentryConnector;
-import net.trainingsoase.api.database.sentry.Environment;
-import net.trainingsoase.api.database.sentry.SentryConnector;
+import net.trainingsoase.api.error.sentry.AbstractSentryConnector;
+import net.trainingsoase.api.error.sentry.Environment;
+import net.trainingsoase.api.error.sentry.SentryConnector;
 import net.trainingsoase.bedwars.commands.StartCommand;
 import net.trainingsoase.bedwars.inventory.Mapvoting;
 import net.trainingsoase.bedwars.inventory.Teamselector;
@@ -23,6 +23,7 @@ import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.team.Teams;
+import net.trainingsoase.bedwars.utils.CombatlogManager;
 import net.trainingsoase.bedwars.utils.Mode;
 import net.trainingsoase.data.i18n.LanguageProvider;
 import net.trainingsoase.hopjes.Game;
@@ -36,11 +37,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import javax.sql.rowset.serial.SerialArray;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author byCrypex
