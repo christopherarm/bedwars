@@ -2,14 +2,14 @@
 
 <!--
 A clear and concise description why you would like to see that
-feature in CloudNet. Is it related to a problem? If so please give
+feature in Bedwars. Is it related to a problem? If so please give
 use some context what the problem is. 
 -->
 
-**Reasons for inclusion into the CloudNet code base:**
+**Reasons for inclusion into the Bedwars code base:**
 
 <!-- 
-Why does this feature need to be included into CloudNet?
+Why does this feature need to be included into Bedwars?
 Why can this feature not be implemented using a module or plugin?
  -->
 

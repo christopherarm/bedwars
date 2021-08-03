@@ -38,7 +38,7 @@ Steps to reproduce the exception:
 <!-- Example: 
  - System specifications: Technical information about your hardware [e.g. CPU = Intel i5 7th Gen etc.]
  - OS: On which operating system did the bug occur? [e.g. Linux, OS X, Windows]
- - Version: Which release and build version did you run/use? [e.g. CloudNet 3.3]
+ - Version: Which release and build version did you run/use? [e.g. Bedwars 1.0]
  
  ------ Copy-paste ------ 
  System specifications: 

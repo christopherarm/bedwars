@@ -106,7 +106,6 @@ public class Bedwars extends Game {
         linearPhaseSeries.start();
 
         registerListeners();
-        registerCommands();
         setupGame();
         createTeams();
 
@@ -153,10 +152,6 @@ public class Bedwars extends Game {
         getServer().getPluginManager().registerEvents(new NoWeatherListener(), this);
         getServer().getPluginManager().registerEvents(new NoLeaveDecayListener(), this);
         getServer().getPluginManager().registerEvents(new NoItemFrameBreakListener(), this);
-    }
-
-    private void registerCommands() {
-        getCommand("start").setExecutor(new StartCommand(this));
     }
 
     private void createTeams() {

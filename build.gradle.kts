@@ -82,21 +82,24 @@ repositories {
 
 dependencies {
 
+    // External depedencies
     compileOnlyApi("org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT")
-    compileOnlyApi("com.mojang:authlib:1.5.21")
-    compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-20210802.152932-14")
-    compileOnlyApi("com.grinderwolf:slimeworldmanager-api:2.2.1")
     compileOnlyApi("com.comphenix.protocol:ProtocolLib:4.7.0")
+    compileOnlyApi("com.grinderwolf:slimeworldmanager-api:2.2.1")
+    compileOnlyApi("com.mojang:authlib:1.5.21")
+    compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
+    compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")
+    compileOnlyApi("de.dytanic.cloudnet:cloudnet-bridge:$CN_VERSION")
+    implementation("co.aikar:taskchain-bukkit:3.7.2")
+
+    // Internal dependencies
+    compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-20210802.152932-14")
     compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-20210801.171404-4")
     compileOnlyApi("net.trainingsoase:Oreo:1.0.0-20210802.151000-6")
     compileOnlyApi("net.trainingsoase:spectator:0.0.0-SNAPSHOT")
     implementation("com.github.juliarn:npc-lib:2.6-RELEASE")
-    implementation("co.aikar:taskchain-bukkit:3.7.2")
 
-    compileOnlyApi("de.dytanic.cloudnet:cloudnet-driver:$CN_VERSION")
-    compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")
-    compileOnlyApi("de.dytanic.cloudnet:cloudnet-bridge:$CN_VERSION")
-
+    // Testing dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
