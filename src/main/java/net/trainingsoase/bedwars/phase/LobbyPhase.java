@@ -70,11 +70,6 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
     @Override
     protected void onFinish() {
-        pickRandomTeams();
-
-        bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
-                MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
-
         this.removePhaseListener(this);
     }
 
@@ -106,6 +101,11 @@ public class LobbyPhase extends TimedPhase implements Listener {
                     break;
 
                 case 0:
+                    pickRandomTeams();
+
+                    bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
+                            MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
+
                     onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.LEVEL_UP, 2f, 5f);
                     break;
                 default:

@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
+import org.github.paperspigot.Title;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -134,18 +135,16 @@ public class PlayerJoinHandler implements Listener {
             var oneCache = new MessageCache(bedwars.getLanguageProvider(), "actionbar_waiting_one");
 
             if(onlinePlayers < startSize) {
-
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(onlinePlayer.getUniqueId()).thenAccept(iOasePlayer -> {
-                        if (sizeNeeded == 1) {
+                    IOasePlayer iOasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());
+                    if (sizeNeeded == 1) {
                             ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(
                                     bedwars.getLanguageProvider().getTextProvider().format(oneCache.getTextData(), iOasePlayer.getLocale())));
-                        } else {
-                            ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(
-                                    bedwars.getLanguageProvider().getTextProvider().format(moreCache.getTextData(), iOasePlayer.getLocale())));                        }
-                    });
+                    } else {
+                        ActionbarAPI.setActionBarFor(onlinePlayer, WrappedChatComponent.fromText(
+                                bedwars.getLanguageProvider().getTextProvider().format(moreCache.getTextData(), iOasePlayer.getLocale())));                        }
+                    }
                 }
-            }
         }, 0, 40);
     }
 }

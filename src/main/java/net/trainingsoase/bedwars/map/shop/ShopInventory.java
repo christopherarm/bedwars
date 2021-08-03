@@ -2,6 +2,7 @@ package net.trainingsoase.bedwars.map.shop;
 
 import at.rxcki.strigiformes.message.MessageCache;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
@@ -68,68 +69,67 @@ public class ShopInventory {
             event.setCancelled(true);
 
             final Player player = (Player) event.getWhoClicked();
+            final IOasePlayer iOasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
 
-            OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayerAsync(player.getUniqueId()).thenAccept(iOasePlayer -> {
-                if(event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null || event.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+            if(event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null || event.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 
-                bedwars.getTeamService().getTeam(player).ifPresent(team -> {
+            bedwars.getTeamService().getTeam(player).ifPresent(team -> {
+                Material buyMaterial = shopItem.getSpawnType().getMaterial();
+                if(getItemAmount(player, buyMaterial) < shopItem.getPrice()) {
 
-                    Material buyMaterial = shopItem.getSpawnType().getMaterial();
-                    if(getItemAmount(player, buyMaterial) < shopItem.getPrice()) {
+                    ActionbarAPI.setActionBarFor(player,
+                            WrappedChatComponent.fromText(bedwars.getLanguageProvider().getTextProvider()
+                                    .format(ressourceCache.getTextData(), iOasePlayer.getLocale())));
 
-                        ActionbarAPI.setActionBarFor(player,
-                                WrappedChatComponent.fromText(bedwars.getLanguageProvider().getTextProvider()
-                                        .format(ressourceCache.getTextData(), iOasePlayer.getLocale())));
+                            player.playSound(player.getLocation(), Sound.NOTE_BASS, 1f, 1f);
+                    return;
+                }
 
-                                player.playSound(player.getLocation(), Sound.NOTE_BASS, 1f, 1f);
-                        return;
-                    }
+                if(shopItem == ShopItems.BLOCK_SANDSTONE && event.isShiftClick()) {
+                    int max = getItemAmount(player, buyMaterial);
 
-                    if(shopItem == ShopItems.BLOCK_SANDSTONE && event.isShiftClick()) {
-                        int max = getItemAmount(player, buyMaterial);
+                    if(max > 32) max = 32;
 
-                        if(max > 32) max = 32;
+                    var item = new ItemBuilder(event.getCurrentItem().getType())
+                            .addEnchantments(shopItem.getItem().getEnchantments())
+                            .setAmount(max * 2).build();
 
-                        var item = new ItemBuilder(event.getCurrentItem().getType())
-                                .addEnchantments(shopItem.getItem().getEnchantments())
-                                .setAmount(max * 2).build();
-
-                        removeItem(player, max, buyMaterial);
-                        player.getInventory().addItem(item);
-                        player.playSound(player.getLocation(), Sound.CHICKEN_EGG_POP, 1f, 1f);
-                        return;
-                    }
-
-                    ItemStack item;
-
-                    if(shopItem.getItem().getItemMeta() instanceof LeatherArmorMeta) {
-                        item = new LeatherArmorBuilder(shopItem.getItem())
-                                .setColor(team.getColorData().getColor()).build();
-
-                    } else {
-                        item = new ItemBuilder(event.getCurrentItem().getType())
-                                .addEnchantments(shopItem.getItem().getEnchantments())
-                                .setAmount(shopItem.getItem().getAmount()).build();
-
-                    }
-
-                    removeItem(player, shopItem.getPrice(), buyMaterial);
-
-                    if(event.getClick() == ClickType.NUMBER_KEY) {
-                        if(player.getInventory().getItem(event.getHotbarButton()) != null) {
-                            ItemStack stack = player.getInventory().getItem(event.getHotbarButton());
-                            player.getInventory().setItem(event.getHotbarButton(), item);
-                            player.getInventory().addItem(stack);
-                        } else {
-                            player.getInventory().setItem(event.getHotbarButton(), item);
-                        }
-
-                    } else {
-                        player.getInventory().addItem(item);
-                    }
+                    removeItem(player, max, buyMaterial);
+                    player.getInventory().addItem(item);
                     player.playSound(player.getLocation(), Sound.CHICKEN_EGG_POP, 1f, 1f);
-                });
+                    return;
+                }
+
+                ItemStack item;
+
+                if(shopItem.getItem().getItemMeta() instanceof LeatherArmorMeta) {
+                    item = new LeatherArmorBuilder(shopItem.getItem())
+                            .setColor(team.getColorData().getColor()).build();
+
+                } else {
+                    item = new ItemBuilder(event.getCurrentItem().getType())
+                            .addEnchantments(shopItem.getItem().getEnchantments())
+                            .setAmount(shopItem.getItem().getAmount()).build();
+
+                }
+
+                removeItem(player, shopItem.getPrice(), buyMaterial);
+
+                if(event.getClick() == ClickType.NUMBER_KEY) {
+                    if(player.getInventory().getItem(event.getHotbarButton()) != null) {
+                        ItemStack stack = player.getInventory().getItem(event.getHotbarButton());
+                        player.getInventory().setItem(event.getHotbarButton(), item);
+                        player.getInventory().addItem(stack);
+                    } else {
+                        player.getInventory().setItem(event.getHotbarButton(), item);
+                    }
+
+                } else {
+                    player.getInventory().addItem(item);
+                }
+                player.playSound(player.getLocation(), Sound.CHICKEN_EGG_POP, 1f, 1f);
             });
+
         };
     }
 
