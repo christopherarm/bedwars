@@ -1,29 +1,21 @@
-### All Submissions:
+<!-- PLEASE ENSURE YOU HAVE READ CLOUDNET'S CODESTYLE GUIDELINES -->
+<!-- IF YOU'RE NOT FOLLOWING CLOUDNET'S CODESTYLE GUIDELINES, THEN THIS PULL REQUEST IS LIKELY TO BE REJECTED -->
+<!-- IF YOU'RE NOT PROVIDING ANY INFORMATION, THEN THIS PULL REQUEST IS LIKELY TO BE REJECTED -->
 
-* [ ] Have you followed the guidelines in our Contributing document?
-* [ ] Have you checked to ensure there aren't other open [Pull Requests](../../../pulls) for the same update/change?
-* [ ] Breaking change (fix or feature that would cause existing functionality to change)
-* [ ] I have updated the documentation accordingly.  
+This pull request includes:
 
-<!-- You can erase any parts of this template not applicable to your Pull Request. -->
+- [ ] breaking changes
+- [ ] no breaking changes
 
-### New Feature Submissions:
+### Changes made to the repository:
 
-1. [ ] Does your submission pass tests?
-2. [ ] Have you lint your code locally prior to submission?
+<!-- A brief description of the changes done in this pull request. -->
 
-### Changes to Core Features:
+### Documentation of test results:
 
-* [ ] Have you added an explanation of what your changes do and why you'd like us to include them?
-* [ ] Have you written new tests for your core changes, as applicable?
-* [ ] Have you successfully ran tests with your changes locally?
+<!-- Add test results before and after applying your changes. -->
 
-### Description
 
-<!-- What you have changed/added/removed and why -->
+### Related issues/discussions:
 
-### Purpose
-
-<!-- why do we need this? -->
-
-### Links
+<!-- Add any related issues here by mentioning them (e.g. Fixes #1). -->  
