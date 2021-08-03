@@ -80,13 +80,6 @@ public class MapHelper {
 
     public void loadMapNames() {
         try {
-
-            for (int i = 1; i < 9; i++) {
-                Path path = Paths.get("/home/Maps/Bedwars/" + bedwars.getMode().getMode().split("x")[0] + "x" + i);
-                if (Files.exists(path)) {
-
-                }
-            }
             List<Path> subfolder = Files.walk(Paths.get("/home/Maps/Bedwars/" + bedwars.getMode().getMode()), 1)
                     .filter(Files::isDirectory)
                     .filter(it -> !it.getFileName().toString().equalsIgnoreCase("world"))
