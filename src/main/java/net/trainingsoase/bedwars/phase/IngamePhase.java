@@ -218,8 +218,6 @@ public class IngamePhase extends TimedPhase implements Listener {
 
     @EventHandler
     public void handleInteract(final PlayerInteractEvent event) {
-        if(spectatorService.getPlayers().contains(event.getPlayer())) return;
-
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.BED_BLOCK) {
                 event.setCancelled(true);
@@ -364,6 +362,8 @@ public class IngamePhase extends TimedPhase implements Listener {
     public void handleNPCClick(final PlayerNPCInteractEvent event) {
         final Player player = event.getPlayer();
         final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
+
+        if(spectatorService.getPlayers().contains(event.getPlayer())) return;
 
         if(event.getUseAction() == PlayerNPCInteractEvent.EntityUseAction.INTERACT) {
             player.openInventory(bedwars.getShop().getShopInventory(oasePlayer.getLocale()));
