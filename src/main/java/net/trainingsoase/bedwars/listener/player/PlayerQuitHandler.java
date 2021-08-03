@@ -4,6 +4,7 @@ import at.rxcki.strigiformes.message.MessageCache;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.api.player.IPlayerExecutor;
 import net.trainingsoase.bedwars.Bedwars;
+import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
@@ -60,7 +61,12 @@ public class PlayerQuitHandler implements Listener {
             bedwars.getVoting().getOffVotes().remove(player);
             bedwars.getVoting().updateVotingInventory();
             return;
+
+        } else if(phaseSeries.getCurrentPhase() instanceof IngamePhase) {
+            var ingamePhase = (IngamePhase) phaseSeries.getCurrentPhase();
+            ingamePhase.getCombatlogManager().getCombatLogMap().remove(player);
         }
+
 
         event.setQuitMessage(null);
     }

@@ -1,30 +1,52 @@
-<!--- Provide a general summary of the issue in the Title above -->
+**Description of the bug:**
 
-## Expected Behavior
-<!--- Tell us what should happen -->
+<!-- A clear and concise description of what the bug is. Summarize the bug with a few words or sentences. -->
 
-## Current Behavior
-<!--- Tell us what happens instead of the expected behavior -->
 
-## Possible Solution
-<!--- Not obligatory, but suggest a fix/reason for the bug, -->
+**Steps to reproduce this bug:**
 
-## Steps to Reproduce
-<!--- Provide a link to a live example, or an unambiguous set of steps to -->
-<!--- reproduce this bug. Include code to reproduce, if relevant -->
-1.
-2.
-3.
-4.
+<!-- Here is an example for how this could look like. The important thing is that you are describing the steps as specific as possible! -->
+<!--
 
-## Context (Environment)
-<!--- How has this issue affected you? What are you trying to accomplish? -->
-<!--- Providing context helps us come up with a solution that is most useful in the real world -->
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-<!--- Provide a general summary of the issue in the Title above -->
 
-## Detailed Description
-<!--- Provide a detailed description of the change or addition you are proposing -->
+Steps to reproduce the exception:
+1. Declare object '....'
+2. Call method '#foo(int)'
+3. See exception
 
-## Possible Implementation
-<!--- Not obligatory, but suggest an idea for implementing addition or change -->
+-->
+
+
+**Expected behavior:**
+
+<!-- A clear and concise description of what you expected to happen. -->
+
+
+**Screenshots:**
+
+<!-- If applicable, add screenshots to help explain your problem. -->
+
+
+**Environment and used hardware:**
+
+<!-- Example: 
+ - System specifications: Technical information about your hardware [e.g. CPU = Intel i5 7th Gen etc.]
+ - OS: On which operating system did the bug occur? [e.g. Linux, OS X, Windows]
+ - Version: Which release and build version did you run/use? [e.g. Bedwars 1.0]
+ 
+ ------ Copy-paste ------ 
+ System specifications: 
+ OS: 
+ Version: 
+-->
+
+
+**Additional context (optional):**
+
+<!-- Add any other important information about the problem here. -->

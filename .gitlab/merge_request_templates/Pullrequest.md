@@ -1,29 +1,17 @@
-### All Submissions:
+This pull request includes:
 
-* [ ] Have you followed the guidelines in our Contributing document?
-* [ ] Have you checked to ensure there aren't other open [Pull Requests](../../../pulls) for the same update/change?
-* [ ] Breaking change (fix or feature that would cause existing functionality to change)
-* [ ] I have updated the documentation accordingly.  
+- [ ] breaking changes
+- [ ] no breaking changes
 
-<!-- You can erase any parts of this template not applicable to your Pull Request. -->
+### Changes made to the repository:
 
-### New Feature Submissions:
+<!-- A brief description of the changes done in this pull request. -->
 
-1. [ ] Does your submission pass tests?
-2. [ ] Have you lint your code locally prior to submission?
+### Documentation of test results:
 
-### Changes to Core Features:
+<!-- Add test results before and after applying your changes. -->
 
-* [ ] Have you added an explanation of what your changes do and why you'd like us to include them?
-* [ ] Have you written new tests for your core changes, as applicable?
-* [ ] Have you successfully ran tests with your changes locally?
 
-### Description
+### Related issues/discussions:
 
-<!-- What you have changed/added/removed and why -->
-
-### Purpose
-
-<!-- why do we need this? -->
-
-### Links
+<!-- Add any related issues here by mentioning them (e.g. Fixes #1). -->  

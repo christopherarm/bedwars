@@ -4,6 +4,7 @@ import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
+import net.trainingsoase.bedwars.commands.StartCommand;
 import net.trainingsoase.bedwars.item.JoinItems;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
@@ -40,6 +41,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
         this.setPaused(true);
         this.setCurrentTicks(61);
         this.joinItems = new JoinItems(bedwars.getLanguageProvider());
+        bedwars.getCommand("start").setExecutor(new StartCommand(bedwars));
     }
 
     public void checkStartCondition() {
@@ -47,7 +49,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
             setPaused(false);
 
             if(Bukkit.getOnlinePlayers().size() == bedwars.getMode().getPlayers()) {
-                setCurrentTicks(1);
+                setCurrentTicks(6);
             }
         }
     }
@@ -70,11 +72,6 @@ public class LobbyPhase extends TimedPhase implements Listener {
 
     @Override
     protected void onFinish() {
-        pickRandomTeams();
-
-        bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
-                MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
-
         this.removePhaseListener(this);
     }
 
@@ -106,6 +103,11 @@ public class LobbyPhase extends TimedPhase implements Listener {
                     break;
 
                 case 0:
+                    pickRandomTeams();
+
+                    bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
+                            MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
+
                     onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.LEVEL_UP, 2f, 5f);
                     break;
                 default:

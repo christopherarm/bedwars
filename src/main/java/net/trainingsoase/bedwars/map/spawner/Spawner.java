@@ -68,8 +68,10 @@ public class Spawner {
                 this.iron.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, iron)
                         .setVelocity(new Vector(0, 0, 0))), 200L, 200L);
 
-        bedwars.runTaskTimer(() ->
-                this.gold.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, gold)
-                        .setVelocity(new Vector(0, 0, 0))), 600L, 600L);
+        if(bedwars.getVoting().getOnVotes().size() > bedwars.getVoting().getOffVotes().size()) {
+            bedwars.runTaskTimer(() ->
+                    this.gold.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, gold)
+                            .setVelocity(new Vector(0, 0, 0))), 600L, 600L);
+        }
     }
 }
