@@ -42,7 +42,7 @@ public class GameMap extends BaseMap {
      */
     private final List<WrappedLocation> shopLocations;
 
-    private Mode mode;
+    private String mode;
 
     /**
      * Instantiates a GameMap with the given parameters
@@ -52,7 +52,7 @@ public class GameMap extends BaseMap {
      * @param shopLocations map of shop locations
      * @param builders builders of the map
      */
-    public GameMap(String name, Mode mode, WrappedLocation spawn, List<WrappedLocation> bronzeSpawnerLocations,
+    public GameMap(String name, String mode, WrappedLocation spawn, List<WrappedLocation> bronzeSpawnerLocations,
                    List<WrappedLocation> ironSpawnerLocations, List<WrappedLocation> goldSpawnerLocations,
                    HashMap<String, WrappedLocation> spawnLocations, HashMap<String, WrappedLocation> bedLocations,
                    List<WrappedLocation> shopLocations, String... builders) {
@@ -170,11 +170,11 @@ public class GameMap extends BaseMap {
         return bedLocations;
     }
 
-    public Mode getMode() {
+    public String getMode() {
         return mode;
     }
 
-    public void setMode(Mode mode) {
+    public void setMode(String mode) {
         this.mode = mode;
     }
 }

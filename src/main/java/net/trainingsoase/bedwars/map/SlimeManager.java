@@ -47,7 +47,7 @@ public class SlimeManager {
 
     public void loadGameArena(@NotNull String map, @NotNull GameMap gameMap) {
         try {
-            String mapname = "BW-" + map;
+            String mapname = gameMap.getMode() + "_" + map;
             SLIME_LOADER.unlockWorld(mapname);
             CompletableFuture<SlimeWorld> futureSlimeWorld = CompletableFuture.completedFuture(slimePlugin.loadWorld(SLIME_LOADER, mapname,  PROPERTIES));
 
