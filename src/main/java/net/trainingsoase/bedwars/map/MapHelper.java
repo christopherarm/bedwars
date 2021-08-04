@@ -86,6 +86,9 @@ public class MapHelper {
                     .collect(Collectors.toList());
 
             subfolder.remove(0);
+            // 2x[0-9]
+            // 2x2
+            // -9x2-
 
             for (Path path : subfolder) {
                 mapNames.add(path.getFileName().toString());
