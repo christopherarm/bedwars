@@ -38,7 +38,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
     public LobbyPhase(Bedwars bedwars, Game game, boolean async) {
         super("Lobby", game, 20, async);
         this.bedwars = bedwars;
-        this.setPaused(true);
+        setPaused(true);
         this.setCurrentTicks(61);
         this.joinItems = new JoinItems(bedwars.getLanguageProvider());
         bedwars.getCommand("start").setExecutor(new StartCommand(bedwars));
@@ -65,6 +65,10 @@ public class LobbyPhase extends TimedPhase implements Listener {
         }
     }
 
+    public void sendJoinMessage() {
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -79,40 +83,52 @@ public class LobbyPhase extends TimedPhase implements Listener {
     public void onUpdate() {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setLevel(getCurrentTicks());
-            final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());
+        }
 
-            switch (getCurrentTicks()) {
-                case 30:
-                case 15:
-                case 10:
+        switch (getCurrentTicks()) {
+            case 30:
+            case 15:
+            case 10:
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    var oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());
                     bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "game_start_in_more", getCurrentTicks());
                     onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.DIG_WOOD, 1f, 1f);
-                    break;
+                }
+                break;
 
-                case 5:
-                case 4:
-                case 3:
-                case 2:
+            case 5:
+            case 4:
+            case 3:
+            case 2:
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    var oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());
                     bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "game_start_in_more", getCurrentTicks());
                     onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.NOTE_BASS, 1f, 1f);
-                    break;
+                }
+                break;
 
-                case 1:
+            case 1:
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    var oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(onlinePlayer.getUniqueId());
                     bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "game_start_in_one");
                     onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.NOTE_BASS, 1f, 1f);
-                    break;
+                }
+                break;
 
-                case 0:
-                    pickRandomTeams();
+            case 0:
+                pickRandomTeams();
 
-                    bedwars.getSlimeManager().loadGameArena(bedwars.getMapvoting().getVotedMap(),
-                            MapHelper.getInstance(bedwars).loadGameMap(bedwars.getMapvoting().getVotedMap()));
+                String map = bedwars.getMapvoting().getVotedMap();
 
+                bedwars.getSlimeManager().loadGameArena(map,
+                        MapHelper.getInstance(bedwars).loadGameMap(map));
+
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.LEVEL_UP, 2f, 5f);
-                    break;
-                default:
-                    break;
-            }
+                }
+                break;
+            default:
+                break;
         }
     }
 

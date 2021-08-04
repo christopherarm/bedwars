@@ -342,6 +342,9 @@ public class IngamePhase extends TimedPhase implements Listener {
     public void handleDeath(final PlayerDeathEvent event) {
         final Player player = event.getEntity();
 
+        event.getDrops().clear();
+        event.setDroppedExp(0);
+
         checkDeath(player, true);
 
         event.setDeathMessage(null);

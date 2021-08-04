@@ -11,18 +11,17 @@ import net.trainingsoase.oreo.inventory.translated.GlobalTranslatedInventoryBuil
 import net.trainingsoase.oreo.inventory.util.LayoutCalculator;
 import net.trainingsoase.oreo.item.builder.ColoredBuilder;
 import net.trainingsoase.oreo.item.builder.ItemBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -117,7 +116,7 @@ public class Mapvoting {
         };
     }
 
-    public String getVotedMap() {
+    public synchronized String getVotedMap() {
         Pair<VoteMap, Integer> votes = new Pair<>();
 
         votes.setFirst(null);
@@ -131,6 +130,7 @@ public class Mapvoting {
         }
 
         if (votes.getFirst() == null) {
+            Bukkit.broadcastMessage("call");
             return pickRandomMap();
         } else {
             return votes.getFirst().getName();
@@ -138,8 +138,10 @@ public class Mapvoting {
     }
 
     private String pickRandomMap() {
-        Collections.shuffle(MapHelper.getInstance(bedwars).getMapNames());
-        return MapHelper.getInstance(bedwars).getMapNames().get(0);
+        List<String> mapNames = MapHelper.getInstance(bedwars).getMapNames();
+        Collections.shuffle(mapNames);
+        Bukkit.broadcastMessage(mapNames.get(0));
+        return mapNames.get(0);
     }
 
     public Inventory getMapVotingInventory(Locale locale) {
