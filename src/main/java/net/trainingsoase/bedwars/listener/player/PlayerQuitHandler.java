@@ -65,8 +65,8 @@ public class PlayerQuitHandler implements Listener {
         } else if(phaseSeries.getCurrentPhase() instanceof IngamePhase) {
             var ingamePhase = (IngamePhase) phaseSeries.getCurrentPhase();
             ingamePhase.getCombatlogManager().getCombatLogMap().remove(player);
+            ingamePhase.checkQuit(player);
         }
-
 
         event.setQuitMessage(null);
     }

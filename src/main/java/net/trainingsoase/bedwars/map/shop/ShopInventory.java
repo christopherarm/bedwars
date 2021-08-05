@@ -49,13 +49,10 @@ public class ShopInventory {
         this.layout = layoutMain.clone();
         this.ressourceCache = new MessageCache(bedwars.getLanguageProvider(), "not_enough_ressources");
 
-
         shopItemInventoryBuilder = new GlobalTranslatedInventoryBuilder(InventoryRows.TWO, bedwars.getLanguageProvider());
         shopItemInventoryBuilder.registerListener(bedwars);
         shopItemInventoryBuilder.setTitleData(category.getKey());
         shopItemInventoryBuilder.setInventoryLayout(layout);
-
-        //layout.blank(9,10,11,12,13,14,15,16,17);
 
         for (ShopItems shopItems : ShopItems.getItemsFromCategory(category)) {
             layout.setItem(shopItems.getSlotID(), new InventorySlot(shopItems.getItem()).setClickListener(handleItemClick(shopItems)));
@@ -106,11 +103,13 @@ public class ShopInventory {
                     item = new LeatherArmorBuilder(shopItem.getItem())
                             .setColor(team.getColorData().getColor()).build();
 
+                } else if(shopItem.getShopCategory() == ShopCategory.POTIONS || shopItem.getItem().getType() == Material.MONSTER_EGG) {
+                    item = shopItem.getItem();
+
                 } else {
                     item = new ItemBuilder(event.getCurrentItem().getType())
                             .addEnchantments(shopItem.getItem().getEnchantments())
                             .setAmount(shopItem.getItem().getAmount()).build();
-
                 }
 
                 removeItem(player, shopItem.getPrice(), buyMaterial);

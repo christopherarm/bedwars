@@ -41,6 +41,8 @@ public class Mapvoting {
     private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
             .setColor(DyeColor.GRAY).setEmptyName().build();
 
+    private String playedMap;
+
     public Mapvoting(Bedwars bedwars) {
         this.bedwars = bedwars;
         this.mapVotes = new HashMap<>();
@@ -130,9 +132,10 @@ public class Mapvoting {
         }
 
         if (votes.getFirst() == null) {
-            Bukkit.broadcastMessage("call");
-            return pickRandomMap();
+            playedMap = pickRandomMap();
+            return playedMap;
         } else {
+            playedMap = votes.getFirst().getName();
             return votes.getFirst().getName();
         }
     }
@@ -146,5 +149,9 @@ public class Mapvoting {
 
     public Inventory getMapVotingInventory(Locale locale) {
         return mapInventoryBuilder.getInventory(locale);
+    }
+
+    public String getPlayedMap() {
+        return playedMap;
     }
 }

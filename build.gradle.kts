@@ -37,6 +37,11 @@ repositories {
     maven {
         url = uri("https://hub.spigotmc.org/nexus/content/groups/public/")
     }
+
+    maven {
+        url = uri("https://mvnrepository.com/artifact/com.github.azbh111/craftbukkit-1.8.8")
+    }
+
     maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
         name = "GitLab"
@@ -91,6 +96,7 @@ dependencies {
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-wrapper-jvm:$CN_VERSION")
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-bridge:$CN_VERSION")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
+    compileOnlyApi("com.github.azbh111:craftbukkit-1.8.8:R")
 
     // Internal dependencies
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-20210802.152932-14")

@@ -9,6 +9,7 @@ import de.dytanic.cloudnet.common.collection.Pair;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
+import net.trainingsoase.bedwars.item.specials.tntsheep.TNTSheepListener;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.map.shop.NPCShop;
 import net.trainingsoase.bedwars.map.spawner.Spawner;
@@ -114,6 +115,7 @@ public class IngamePhase extends TimedPhase implements Listener {
 
         this.spectatorService.owningPlugin(bedwars).useChat().useItems(InventoryRows.ONE).useSpectatorLocation(MapHelper.getInstance(bedwars).getGameMap().getSpawn());
         this.combatlogManager = new CombatlogManager(bedwars);
+        bedwars.getServer().getPluginManager().registerEvents(new TNTSheepListener(bedwars), bedwars);
 
         Bukkit.getScheduler().runTaskLater(bedwars, () -> {
             spawner.startSpawners();
@@ -219,6 +221,10 @@ public class IngamePhase extends TimedPhase implements Listener {
         return spectatorService;
     }
 
+    public List<Block> getBreakBlocks() {
+        return breakBlocks;
+    }
+
     @EventHandler
     public void handleInteract(final PlayerInteractEvent event) {
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -232,11 +238,13 @@ public class IngamePhase extends TimedPhase implements Listener {
             }
 
             if(event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
-                event.getClickedBlock().getWorld().createExplosion(event.getClickedBlock().getLocation(), 2f);
+                event.getClickedBlock().getWorld().createExplosion(event.getClickedBlock().getLocation(), 4f);
             }
 
             if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.BED_BLOCK) {
-                event.setCancelled(true);
+                if(!event.getPlayer().isSneaking()) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
@@ -366,7 +374,7 @@ public class IngamePhase extends TimedPhase implements Listener {
         event.getDrops().clear();
         event.setDroppedExp(0);
 
-        checkDeath(player, true);
+        checkDeath(player);
 
         event.setDeathMessage(null);
     }
@@ -433,13 +441,11 @@ public class IngamePhase extends TimedPhase implements Listener {
         }
     }
 
-    private void checkDeath(Player player, boolean isDead) {
+    private void checkDeath(Player player) {
         bedwars.getTeamService().getTeam(player).ifPresent(team -> {
             if(team.hasBed()) {
                 Bukkit.getScheduler().runTaskLater(bedwars, () -> {
-                    if(isDead) {
-                        player.spigot().respawn();
-                    }
+                    player.spigot().respawn();
                     player.setNoDamageTicks(Integer.MAX_VALUE);
                     player.getInventory().clear();
                     player.getInventory().setArmorContents(null);
@@ -449,6 +455,7 @@ public class IngamePhase extends TimedPhase implements Listener {
                     player.setFoodLevel(20);
                     player.setFireTicks(0);
                 }, 1);
+
 
                 var killer = combatlogManager.getCombatLogMap().get(player);
 
@@ -464,9 +471,7 @@ public class IngamePhase extends TimedPhase implements Listener {
                 return;
             }
 
-            if(isDead) {
-                player.spigot().respawn();
-            }
+            player.spigot().respawn();
             player.getInventory().clear();
             player.getInventory().setArmorContents(null);
             player.getVelocity().zero();
@@ -479,7 +484,7 @@ public class IngamePhase extends TimedPhase implements Listener {
                 spectatorService.add(player);
 
                 for (IOasePlayer currentOnlinePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
-                    ScoreboardAPI.INSTANCE.updateTeam(Bukkit.getPlayer(currentOnlinePlayer.getUUID()), team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§6" + team.getCurrentSize() + "§7) ❤ ",
+                    ScoreboardAPI.INSTANCE.updateTeam(Bukkit.getPlayer(currentOnlinePlayer.getUUID()), team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§6" + team.getCurrentSize() + "§7) §c❤ ",
                             bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier()
                                     , currentOnlinePlayer.getLocale()
                                     , team.getColorData().getChatColor()));
@@ -508,6 +513,49 @@ public class IngamePhase extends TimedPhase implements Listener {
 
             spectatorService.add(player);
         });
+    }
+
+    //TODO: Überarbeiten :)
+    public void checkQuit(Player player) {
+        BedwarsTeam team = bedwars.getTeamService().getTeam(player).get();
+
+            sendMessage("game_player_left", team.getColorData().getChatColor() + player.getDisplayName());
+
+            if(team.getPlayers().size() > 1) {
+                team.removePlayer(player);
+
+                for (IOasePlayer currentOnlinePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
+                    ScoreboardAPI.INSTANCE.updateTeam(Bukkit.getPlayer(currentOnlinePlayer.getUUID()), team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§6" + team.getCurrentSize() + "§7) §c❤ ",
+                            bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier()
+                                    , currentOnlinePlayer.getLocale()
+                                    , team.getColorData().getChatColor()));
+                }
+
+            } else if(team.getPlayers().size() == 1) {
+                for (IOasePlayer currentOnlinePlayer : OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers()) {
+                    bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), currentOnlinePlayer, "game_team_lost",
+                            bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier(), currentOnlinePlayer.getLocale(), team.getColorData().getChatColor()));
+
+                    //TODO: Message parsing
+                    final Player currentPlayer = Bukkit.getPlayer(currentOnlinePlayer.getUUID());
+
+                    if(currentPlayer != null) {
+                        ScoreboardAPI.INSTANCE.updateTeam(Bukkit.getPlayer(currentOnlinePlayer.getUUID()), team.getIdentifier(), team.getColorData().getChatColor().toString(), "§7(§607§) ❤ ",
+                                bedwars.getLanguageProvider().getTextProvider().format(team.getIdentifier()
+                                        , currentOnlinePlayer.getLocale()
+                                        , team.getColorData().getChatColor()));
+                    }
+
+
+                    team.getPlayers().clear();
+                    bedwars.getTeamService().remove(team);
+                }
+            }
+
+            if(bedwars.getTeamService().getTeams().size() == 1) {
+                Bukkit.getScheduler().runTaskLater(bedwars, this::onSkip, 2);
+            }
+
     }
 
     private void sendMessage(String key, Object... arguments) {

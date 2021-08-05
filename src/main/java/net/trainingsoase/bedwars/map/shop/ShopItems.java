@@ -3,10 +3,13 @@ package net.trainingsoase.bedwars.map.shop;
 import net.trainingsoase.bedwars.map.SpawnType;
 import net.trainingsoase.bedwars.utils.ItemBuilder;
 import net.trainingsoase.oreo.item.builder.LeatherArmorBuilder;
+import net.trainingsoase.oreo.item.builder.PotionBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
@@ -93,7 +96,7 @@ public enum ShopItems {
 
     PICKAXE_STONE(ShopCategory.PICKAXES, SpawnType.IRON, 2, 13, new ItemBuilder(Material.STONE_PICKAXE)
             .setLore(Arrays.asList("", " §8» §f2 Iron"))
-            .addEnchantment(Enchantment.DIG_SPEED, 1)
+            .addEnchantment(Enchantment.DIG_SPEED, 2)
             .addEnchantment(Enchantment.DURABILITY, 1)
             .addItemFlag(ItemFlag.HIDE_ATTRIBUTES)
             .setDisplayName("§7§lStone Pickaxe").build()),
@@ -149,7 +152,7 @@ public enum ShopItems {
 
     BOW_BOW_III(ShopCategory.BOWS, SpawnType.GOLD, 13, 13, new ItemBuilder(Material.BOW)
             .addEnchantment(Enchantment.ARROW_INFINITE, 1)
-            .addEnchantment(Enchantment.ARROW_DAMAGE, 1)
+            .addEnchantment(Enchantment.ARROW_DAMAGE, 2)
             .addEnchantment(Enchantment.ARROW_KNOCKBACK, 1)
             .addItemFlag(ItemFlag.HIDE_ATTRIBUTES)
             .setLore(Arrays.asList("", " §8» §613 Gold"))
@@ -183,8 +186,10 @@ public enum ShopItems {
             .setLore(Arrays.asList("", " §8» §f5 Iron"))
             .setDisplayName("§7§lPotion of Healing §8- §eLevel II").build()),
 
-    POTIONS_SWIFTNESS(ShopCategory.POTIONS, SpawnType.IRON, 7, 12, new ItemBuilder(Material.POTION)
-            .setData((short) 8194)
+    POTIONS_SWIFTNESS(ShopCategory.POTIONS, SpawnType.IRON, 7, 12, new PotionBuilder()
+            .setType(PotionType.SPEED)
+            .setSplash(false)
+            .addEffect(new PotionEffect(PotionEffectType.SPEED, 20*90, 1, true, true))
             .setLore(Arrays.asList("", " §8» §f7 Iron"))
             .setDisplayName("§7§lPotion of Swiftness").build()),
 

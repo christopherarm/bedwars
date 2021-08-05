@@ -80,11 +80,6 @@ public class ProtectionHandler implements Listener {
     }
 
     @EventHandler
-    public void handleEntityExplode(final EntityExplodeEvent event) {
-        event.setCancelled(true);
-    }
-
-    @EventHandler
     public void handleAchievemtnAward(final PlayerAchievementAwardedEvent event) {
         event.setCancelled(true);
     }
