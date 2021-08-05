@@ -236,11 +236,6 @@ public class IngamePhase extends TimedPhase implements Listener {
     }
 
     @EventHandler
-    public void handleInventoryClick(final InventoryClickEvent event) {
-        if(!(event.getView().getTopInventory().getHolder() instanceof TeamChestHolder)) return;
-    }
-
-    @EventHandler
     public void handleBlockPlace(final BlockPlaceEvent event) {
         breakBlocks.add(event.getBlock());
     }
