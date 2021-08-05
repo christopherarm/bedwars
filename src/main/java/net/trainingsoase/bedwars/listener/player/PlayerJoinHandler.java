@@ -127,6 +127,8 @@ public class PlayerJoinHandler implements Listener {
 
     private void sendCountDownBar() {
         bukkitTask = bedwars.runTaskTimer(() -> {
+            if(!(phaseSeries.getCurrentPhase() instanceof LobbyPhase)) bukkitTask.cancel();
+
             int startSize = bedwars.getMode().getStartSize();
             int onlinePlayers = Bukkit.getOnlinePlayers().size();
             int sizeNeeded = startSize - onlinePlayers;
