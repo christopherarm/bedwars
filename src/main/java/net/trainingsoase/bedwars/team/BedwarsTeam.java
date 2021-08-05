@@ -1,8 +1,12 @@
 package net.trainingsoase.bedwars.team;
 
 import at.rxcki.strigiformes.MessageProvider;
+import net.trainingsoase.bedwars.utils.TeamChestHolder;
 import net.trainingsoase.hopjes.api.ColorData;
 import net.trainingsoase.hopjes.api.teams.TranslatedTeam;
+import org.bukkit.Bukkit;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 
 import java.util.Objects;
 
@@ -18,10 +22,17 @@ public class BedwarsTeam extends TranslatedTeam {
 
     private boolean hasBed;
 
+    private TeamChestHolder teamChestHolder;
+
+    private Inventory teamChestInv;
+
     public BedwarsTeam(MessageProvider messageProvider, String key, int initialCapacity, ColorData colorData, String skinValue) {
         super(messageProvider, key, initialCapacity, colorData);
         this.skinValue = skinValue;
         this.hasBed = true;
+        this.teamChestHolder = new TeamChestHolder(this);
+        this.teamChestInv = Bukkit.createInventory(this.teamChestHolder, InventoryType.ENDER_CHEST);
+        this.teamChestHolder.setInventory(teamChestInv);
     }
 
     @Override
@@ -46,7 +57,15 @@ public class BedwarsTeam extends TranslatedTeam {
         return hasBed;
     }
 
+    public Inventory getTeamChestInv() {
+        return teamChestInv;
+    }
+
     public String getSkinValue() {
         return skinValue;
+    }
+
+    public TeamChestHolder getTeamChestHolder() {
+        return teamChestHolder;
     }
 }
