@@ -16,6 +16,7 @@ import net.trainingsoase.bedwars.map.spawner.Spawner;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.bedwars.utils.CombatlogManager;
+import net.trainingsoase.bedwars.utils.ItemBuilder;
 import net.trainingsoase.bedwars.utils.MapUtils;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
@@ -27,10 +28,9 @@ import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import net.trainingsoase.oreo.util.Locations;
 import net.trainingsoase.oreo.util.Strings;
 import net.trainingsoase.spectator.SpectatorService;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,6 +43,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -66,6 +67,8 @@ public class IngamePhase extends TimedPhase implements Listener {
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
 
     private static final Vector BOOST_VECTOR = new Vector(0, 2.2, 0);
+
+    private static final BlockFace[] BLOCK_FACES = new BlockFace[] {BlockFace.SELF, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST};
 
     private final Bedwars bedwars;
 
@@ -241,6 +244,55 @@ public class IngamePhase extends TimedPhase implements Listener {
         }
     }
 
+    public void useRescuePlatform(Player player) {
+        final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
+
+        if (player.isOnGround() || player.getPassenger() != null) {
+            bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "specials_rescue_err");
+            return;
+        }
+        Location below = player.getLocation().clone().subtract(0, 2, 0);
+
+        bedwars.getTeamService().getTeam(player).ifPresent(team -> {
+            List<Block> blocks = new ArrayList<>();
+
+            for (int i = 0; i <= 2; i++) {
+                blocks.add(below.clone().add(i, 0, 0).getBlock());
+                blocks.add(below.clone().add(-i, 0, 0).getBlock());
+                blocks.add(below.clone().add(0, 0, i).getBlock());
+                blocks.add(below.clone().add(0, 0, -i).getBlock());
+            }
+
+            for (BlockFace face : BLOCK_FACES) {
+                if (face == BlockFace.UP || face == BlockFace.DOWN) continue;
+                Block b = below.getBlock().getRelative(face);
+                blocks.add(b);
+            }
+
+            if (blocks.isEmpty()) {
+                bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), oasePlayer, "specials_rescue_err");
+                return;
+            }
+
+            for (Block b : blocks) {
+                if (b.getType() != Material.AIR && b.getType() != Material.WEB && !b.isLiquid() && !b.isEmpty()) continue;
+                b.setType(Material.STAINED_GLASS);
+                b.setData(team.getColorData().getDyeColor().getData());
+                b.getState().update();
+                breakBlocks.add(b);
+            }
+
+            player.teleport(player);
+            this.useEquippedItem(player);
+
+            Bukkit.getScheduler().runTaskLater(bedwars, () -> {
+                for (Block block : blocks) {
+                    block.setType(Material.AIR);
+                }
+            }, 20*5);
+        });
+    }
+
     @EventHandler
     public void handleInteractEntity(final PlayerInteractEntityEvent event) {
         if(event.getRightClicked() == null) return;
@@ -270,6 +322,11 @@ public class IngamePhase extends TimedPhase implements Listener {
     public void handleInteract(final PlayerInteractEvent event) {
         if(event.getItem().getType() == Material.FIREWORK) {
             event.setCancelled(true);
+            return;
+        }
+
+        if(event.getItem().getType() == Material.BLAZE_ROD) {
+            useRescuePlatform(event.getPlayer());
             return;
         }
 
