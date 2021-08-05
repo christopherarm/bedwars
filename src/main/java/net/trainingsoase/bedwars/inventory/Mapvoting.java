@@ -143,7 +143,6 @@ public class Mapvoting {
     private String pickRandomMap() {
         List<String> mapNames = MapHelper.getInstance(bedwars).getMapNames();
         Collections.shuffle(mapNames);
-        Bukkit.broadcastMessage(mapNames.get(0));
         return mapNames.get(0);
     }
 

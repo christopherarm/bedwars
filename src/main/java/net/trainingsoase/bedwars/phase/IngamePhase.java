@@ -2,8 +2,8 @@ package net.trainingsoase.bedwars.phase;
 
 import at.rxcki.strigiformes.TranslatedObjectCache;
 import at.rxcki.strigiformes.message.MessageCache;
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.github.juliarn.npc.NPC;
 import com.github.juliarn.npc.event.PlayerNPCInteractEvent;
 import de.dytanic.cloudnet.common.collection.Pair;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
@@ -17,10 +17,8 @@ import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.bedwars.utils.CombatlogManager;
 import net.trainingsoase.bedwars.utils.MapUtils;
-import net.trainingsoase.bedwars.utils.TeamChestHolder;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
-import net.trainingsoase.hopjes.api.phase.Phase;
 import net.trainingsoase.hopjes.api.phase.TickDirection;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.oreo.inventory.InventoryRows;
@@ -42,18 +40,14 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.util.Vector;
 import org.github.paperspigot.Title;
-import org.redisson.connection.decoder.MapGetAllDecoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +64,8 @@ import java.util.regex.Pattern;
 public class IngamePhase extends TimedPhase implements Listener {
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
+
+    private static final Vector BOOST_VECTOR = new Vector(0, 2.2, 0);
 
     private final Bedwars bedwars;
 
@@ -225,8 +221,58 @@ public class IngamePhase extends TimedPhase implements Listener {
         return breakBlocks;
     }
 
+    public void usePlayerBoost(Player player, Player boosted) {
+        boosted.setVelocity(BOOST_VECTOR);
+        player.playSound(player.getLocation(), Sound.FIREWORK_LAUNCH, 1, 0);
+        boosted.playSound(boosted.getLocation(), Sound.FIREWORK_LAUNCH, 1, 1);
+
+        this.useEquippedItem(player);
+    }
+
+    private void useEquippedItem(Player player) {
+        ItemStack item = player.getItemInHand();
+        if (item == null || item.getType() == Material.AIR) return;
+
+        item.setAmount(item.getAmount() - 1);
+        if (item.getAmount() <= 0) {
+            player.setItemInHand(null);
+        } else {
+            player.setItemInHand(item);
+        }
+    }
+
+    @EventHandler
+    public void handleInteractEntity(final PlayerInteractEntityEvent event) {
+        if(event.getRightClicked() == null) return;
+
+        if(event.getRightClicked() instanceof Player) {
+            if(!(event.getPlayer().getItemInHand().getType() == Material.FIREWORK)) return;
+
+            event.setCancelled(true);
+
+            final Player player = (Player) event.getPlayer();
+            final Player boosted = (Player) event.getRightClicked();
+
+            Optional<BedwarsTeam> playerTeam = bedwars.getTeamService().getTeam(player);
+            Optional<BedwarsTeam> damagerTeam = bedwars.getTeamService().getTeam(boosted);
+
+            if (playerTeam.isPresent() && damagerTeam.isPresent()) {
+                if (playerTeam.get().equals(damagerTeam.get())) {
+                    event.setCancelled(true);
+                    return;
+                }
+                usePlayerBoost(player, boosted);
+            }
+        }
+    }
+
     @EventHandler
     public void handleInteract(final PlayerInteractEvent event) {
+        if(event.getItem().getType() == Material.FIREWORK) {
+            event.setCancelled(true);
+            return;
+        }
+
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if(event.getClickedBlock().getType() == Material.ENDER_CHEST) {
                 Player player = event.getPlayer();
