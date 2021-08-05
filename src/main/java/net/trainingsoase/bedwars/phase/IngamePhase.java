@@ -38,6 +38,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -227,12 +228,22 @@ public class IngamePhase extends TimedPhase implements Listener {
                     event.setCancelled(true);
                     player.openInventory(team.getTeamChestHolder().getInventory());
                 });
+                return;
+            }
+
+            if(event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
+                event.getClickedBlock().getWorld().createExplosion(event.getClickedBlock().getLocation(), 2f);
             }
 
             if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.BED_BLOCK) {
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler
+    public void handleExplode(final BlockExplodeEvent event) {
+        event.blockList().removeIf(block -> !breakBlocks.contains(block));
     }
 
     @EventHandler
