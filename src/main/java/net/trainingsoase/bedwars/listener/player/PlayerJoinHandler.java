@@ -11,6 +11,7 @@ import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
+import net.trainingsoase.spectator.SpectatorService;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -78,9 +79,7 @@ public class PlayerJoinHandler implements Listener {
             lobbyPhase.checkStartCondition();
 
             var cache = new MessageCache(bedwars.getLanguageProvider(), "join_message",
-                    player.getDisplayName(),
-                    Bukkit.getOnlinePlayers().size(),
-                    bedwars.getMode().getPlayers());
+                    player.getDisplayName());
 
 
             for (IOasePlayer iOasePlayer : this.playerExecutor.getCurrentOnlinePlayers()) {
@@ -92,8 +91,7 @@ public class PlayerJoinHandler implements Listener {
             setupJoinItems(player, oasePlayer);
 
         } else if(phaseSeries.getCurrentPhase() instanceof IngamePhase) {
-            var ingamePhase = (IngamePhase) phaseSeries.getCurrentPhase();
-            ingamePhase.getSpectatorService().add(player);
+            SpectatorService.getInstance().add(player);
         }
     }
 

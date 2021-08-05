@@ -39,6 +39,7 @@ public class PlayerQuitHandler implements Listener {
 
     @EventHandler
     public void handleQuit(final PlayerQuitEvent event) {
+        event.setQuitMessage(null);
         final Player player = event.getPlayer();
 
         if (phaseSeries.getCurrentPhase() instanceof LobbyPhase) {
@@ -46,9 +47,7 @@ public class PlayerQuitHandler implements Listener {
             lobbyPhase.checkStopCondition();
 
             var cache = new MessageCache(bedwars.getLanguageProvider(), "quit_message",
-                    player.getDisplayName(),
-                    Bukkit.getOnlinePlayers().size() - 1,
-                    bedwars.getMode().getPlayers());
+                    player.getDisplayName());
 
             for (IOasePlayer iOasePlayer : this.executor.getCurrentOnlinePlayers()) {
                 bedwars.getLanguageProvider().sendMessage(Bukkit.getConsoleSender(), iOasePlayer, cache.getMessage(iOasePlayer.getLocale()));
@@ -60,14 +59,11 @@ public class PlayerQuitHandler implements Listener {
             bedwars.getVoting().getOnVotes().remove(player);
             bedwars.getVoting().getOffVotes().remove(player);
             bedwars.getVoting().updateVotingInventory();
-            return;
 
         } else if(phaseSeries.getCurrentPhase() instanceof IngamePhase) {
             var ingamePhase = (IngamePhase) phaseSeries.getCurrentPhase();
             ingamePhase.getCombatlogManager().getCombatLogMap().remove(player);
             ingamePhase.checkQuit(player);
         }
-
-        event.setQuitMessage(null);
     }
 }

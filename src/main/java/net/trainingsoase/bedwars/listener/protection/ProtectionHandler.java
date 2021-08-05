@@ -1,6 +1,7 @@
 package net.trainingsoase.bedwars.listener.protection;
 
 import net.trainingsoase.bedwars.phase.EndingPhase;
+import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.bedwars.phase.LobbyPhase;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
@@ -36,45 +37,35 @@ public class ProtectionHandler implements Listener {
 
     @EventHandler
     public void handleDropItem(final PlayerDropItemEvent event) {
-        //TODO: add Spectator handlings
-        if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
-                || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
+        if ((!(phaseSeries.getCurrentPhase() instanceof IngamePhase))) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void handlePickupItem(final PlayerPickupItemEvent event) {
-        //TODO: add Spectator handling
-        if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
-                || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
+        if ((!(phaseSeries.getCurrentPhase() instanceof IngamePhase))) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void handleBlockBreak(final BlockBreakEvent event) {
-        //TODO: add Spectator handling
-        if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
-                || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
+        if ((!(phaseSeries.getCurrentPhase() instanceof IngamePhase))) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void handleBlockPlace(final BlockPlaceEvent event) {
-        //TODO: add Spectator handling
-        if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
-                || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
+        if ((!(phaseSeries.getCurrentPhase() instanceof IngamePhase))) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void handleEntityDamage(final EntityDamageEvent event) {
-        //TODO: add Spectator handling
-        if (phaseSeries.getCurrentPhase() instanceof LobbyPhase
-                || phaseSeries.getCurrentPhase() instanceof EndingPhase) {
+        if ((!(phaseSeries.getCurrentPhase() instanceof IngamePhase))) {
             event.setCancelled(true);
         }
     }
