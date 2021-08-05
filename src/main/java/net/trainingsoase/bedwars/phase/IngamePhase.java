@@ -16,6 +16,7 @@ import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.bedwars.utils.CombatlogManager;
 import net.trainingsoase.bedwars.utils.MapUtils;
+import net.trainingsoase.bedwars.utils.TeamChestHolder;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.Phase;
@@ -41,6 +42,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -219,6 +221,14 @@ public class IngamePhase extends TimedPhase implements Listener {
     @EventHandler
     public void handleInteract(final PlayerInteractEvent event) {
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if(event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+                Player player = event.getPlayer();
+                bedwars.getTeamService().getTeam(player).ifPresent(team -> {
+                    event.setCancelled(true);
+                    player.openInventory(team.getTeamChestHolder().getInventory());
+                });
+            }
+
             if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.BED_BLOCK) {
                 event.setCancelled(true);
             }
