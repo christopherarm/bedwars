@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static net.trainingsoase.bedwars.Bedwars.GLASS_PANE;
+
 /**
  * @author byCrypex
  * @version 1.0.0
@@ -29,22 +31,16 @@ public class Voting {
 
     private final GlobalTranslatedInventoryBuilder votingInventoryBuilder;
 
-    private final Bedwars bedwars;
+    private final HashSet<Player> onVotes;
 
-    private final List<Player> onVotes;
-
-    private final List<Player> offVotes;
-
-    private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
-            .setColor(DyeColor.GRAY).setEmptyName().build();
+    private final HashSet<Player> offVotes;
 
     private static final ItemStack GOLD_ITEM = new SkullBuilder().setSkinOverValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ1ZjQ3ZmViNGQ3NWNiMzMzOTE0YmZkYjk5OWE0ODljOWQwZTMyMGQ1NDhmMzEwNDE5YWQ3MzhkMWUyNGI5In19fQ==")
             .setDisplayName("§8» §6Gold").build();
 
     public Voting(Bedwars bedwars) {
-        this.bedwars = bedwars;
-        this.onVotes = new ArrayList<>();
-        this.offVotes = new ArrayList<>();
+        this.onVotes = new HashSet<>();
+        this.offVotes = new HashSet<>();
 
         InventoryLayout inventoryLayout = new InventoryLayout(InventoryRows.ONE);
 
@@ -87,16 +83,12 @@ public class Voting {
 
             if(on) {
                 offVotes.remove(player);
-                if(!onVotes.contains(player)) {
-                    onVotes.add(player);
-                }
+                onVotes.add(player);
                 updateVotingInventory();
                 return;
             }
             onVotes.remove(player);
-            if(!offVotes.contains(player)) {
-                offVotes.add(player);
-            }
+            offVotes.add(player);
             updateVotingInventory();
 
         };
@@ -106,11 +98,11 @@ public class Voting {
         return votingInventoryBuilder.getInventory(locale);
     }
 
-    public List<Player> getOnVotes() {
+    public HashSet<Player> getOnVotes() {
         return onVotes;
     }
 
-    public List<Player> getOffVotes() {
+    public HashSet<Player> getOffVotes() {
         return offVotes;
     }
 }

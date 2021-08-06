@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import static net.trainingsoase.bedwars.Bedwars.GLASS_PANE;
+
 /**
  * @author byCrypex
  * @version 1.0.0
@@ -36,9 +38,6 @@ public class Shop {
     private static final int[] CATEGORY_SLOTS = new int[]{0,1,2,3,4,5,6,7};
 
     private final HashMap<ShopCategory, GlobalTranslatedInventoryBuilder> shopInventories;
-
-    private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
-            .setColor(DyeColor.GRAY).setEmptyName().build();
 
     public Shop(Bedwars bedwars) {
         this.bedwars = bedwars;

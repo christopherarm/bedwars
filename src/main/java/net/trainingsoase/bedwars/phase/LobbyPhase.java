@@ -50,7 +50,9 @@ public class LobbyPhase extends TimedPhase implements Listener {
     public void checkStartCondition() {
         if(Bukkit.getOnlinePlayers().size() >= bedwars.getMode().getStartSize() && isPaused()) {
             setPaused(false);
+        }
 
+        if(!isPaused()) {
             if(Bukkit.getOnlinePlayers().size() == bedwars.getMode().getPlayers()) {
                 setCurrentTicks(6);
             }
@@ -61,10 +63,6 @@ public class LobbyPhase extends TimedPhase implements Listener {
         if((Bukkit.getOnlinePlayers().size() - 1) < bedwars.getMode().getStartSize() && !isPaused()) {
             setPaused(true);
             setCurrentTicks(61);
-
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.setLevel(60);
-            }
         }
     }
 

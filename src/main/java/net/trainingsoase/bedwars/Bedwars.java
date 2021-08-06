@@ -35,9 +35,12 @@ import net.trainingsoase.hopjes.api.listener.*;
 import net.trainingsoase.hopjes.api.phase.LinearPhaseSeries;
 import net.trainingsoase.hopjes.api.phase.TimedPhase;
 import net.trainingsoase.hopjes.api.teams.TeamService;
+import net.trainingsoase.oreo.item.builder.ColoredBuilder;
 import net.trainingsoase.spigot.i18n.BukkitSender;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -58,6 +61,9 @@ public class Bedwars extends Game {
     public Bedwars() {
         super(false, 0);
     }
+
+    public static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
+            .setColor(DyeColor.GRAY).setEmptyName().build();
 
     private Mode mode;
 

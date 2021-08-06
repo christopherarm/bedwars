@@ -24,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static net.trainingsoase.bedwars.Bedwars.GLASS_PANE;
+
 /**
  * @author byCrypex
  * @version 1.0.0
@@ -37,9 +39,6 @@ public class Mapvoting {
     private final Bedwars bedwars;
 
     public final Map<String, VoteMap> mapVotes;
-
-    private static final ItemStack GLASS_PANE = new ColoredBuilder(ColoredBuilder.DyeType.GLASS_PANE)
-            .setColor(DyeColor.GRAY).setEmptyName().build();
 
     private String playedMap;
 
