@@ -209,13 +209,9 @@ public enum ShopItems {
             .setDisplayName("§7§lPotion of Strength").build()),
 
 
-    SPECIALS_SLIME(ShopCategory.SPECIALS, SpawnType.IRON, 2, 10, new ItemBuilder(Material.SLIME_BLOCK)
+    SPECIALS_SLIME(ShopCategory.SPECIALS, SpawnType.IRON, 2, 11, new ItemBuilder(Material.SLIME_BLOCK)
             .setLore(Arrays.asList("", " §8» §f2 Iron"))
             .setDisplayName("§7§lSlime Block").build()),
-
-    SPECIALS_WARPPOWDER(ShopCategory.SPECIALS, SpawnType.IRON, 3, 11, new ItemBuilder(Material.SULPHUR)
-            .setLore(Arrays.asList("", " §8» §f3 Iron"))
-            .setDisplayName("§7§lWarp powder").build()),
 
     SPECIALS_RESCUEPLATFORM(ShopCategory.SPECIALS, SpawnType.GOLD, 3, 12, new ItemBuilder(Material.BLAZE_ROD)
             .setLore(Arrays.asList("", " §8» §63 Gold"))
@@ -232,12 +228,7 @@ public enum ShopItems {
     SPECIALS_SHEEPS(ShopCategory.SPECIALS, SpawnType.BRONZE, 64, 15, new ItemBuilder(Material.MONSTER_EGG)
             .setData((short) 91)
             .setLore(Arrays.asList("", " §8» §c64 Bronze"))
-            .setDisplayName("§7§lSophiäää").build()),
-
-    SPECIALS_TNT(ShopCategory.SPECIALS, SpawnType.GOLD, 4, 16, new ItemBuilder(Material.TNT)
-            .setData((short) 96)
-            .setLore(Arrays.asList("", " §8» §64 Gold"))
-            .setDisplayName("§7§lInstant TNT").build());
+            .setDisplayName("§7§lSophiäää").build());
 
     private ShopCategory shopCategory;
 
