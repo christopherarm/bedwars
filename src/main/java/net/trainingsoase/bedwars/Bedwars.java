@@ -1,6 +1,11 @@
 package net.trainingsoase.bedwars;
 
 import at.rxcki.strigiformes.color.ColorRegistry;
+import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.InfluxDBClientFactory;
+import com.influxdb.client.WriteApi;
+import com.influxdb.client.domain.WritePrecision;
+import com.influxdb.client.write.Point;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.trainingsoase.api.sentry.AbstractSentryConnector;
@@ -35,8 +40,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.File;
+import java.time.Instant;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -65,6 +73,8 @@ public class Bedwars extends Game {
     private Teamselector teamselector;
     private Voting voting;
     private Shop shop;
+
+    private InfluxDBClient influxDBClient;
 
     @Override
     public void onLoad() {
@@ -97,11 +107,26 @@ public class Bedwars extends Game {
         ColorRegistry.useLegacyColors = true;
         languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
 
+        String token = "iMy5plQB3fS19BXCLn6C8DFOh5BIROZo8naUMNNOM2-utgKu2-3Lk2-nXqCGsY1sx-rRUt6kN0eWAMHzQF8Y0g==";
+        String bucket = "dev";
+        String org = "TrainingsOase";
+
+        influxDBClient = InfluxDBClientFactory.create("http://185.117.0.168:8086", token.toCharArray());
+
         linearPhaseSeries = new LinearPhaseSeries<>();
         linearPhaseSeries.add(new LobbyPhase(this, this, true));
         linearPhaseSeries.add(new IngamePhase(this, true, this));
         linearPhaseSeries.add(new EndingPhase(this, true));
         linearPhaseSeries.start();
+
+        /*Point point = Point.measurement("start")
+                        .addTag("server", "Bedwars")
+                        .time(Instant.now(), WritePrecision.NS);
+
+        try (WriteApi writeApi = influxDBClient.getWriteApi()) {
+            writeApi.writePoint("dev", "TrainingsOase", point);
+            System.out.println("Write line");
+        }*/
 
         registerListeners();
         setupGame();
@@ -112,6 +137,17 @@ public class Bedwars extends Game {
         voting = new Voting(this);
         shop = new Shop(this);
         slimeManager = new SlimeManager(this);
+
+        Point point = Point
+                .measurement("game")
+                .addField("gameid", "gameid:)")
+                .addField("bronze", 10)
+                .addField("iron", 20)
+                .time(Instant.now(), WritePrecision.NS);
+
+        try (WriteApi writeApi = influxDBClient.getWriteApi()) {
+            writeApi.writePoint(bucket, org, point);
+        }
     }
 
     @Override
@@ -233,5 +269,9 @@ public class Bedwars extends Game {
 
     public Shop getShop() {
         return shop;
+    }
+
+    public InfluxDBClient getInfluxDBClient() {
+        return influxDBClient;
     }
 }

@@ -43,6 +43,10 @@ repositories {
     }
 
     maven {
+        url = uri("https://maven.elmakers.com/repository/")
+    }
+
+    maven {
         url = uri("https://gitlab.madfix.de/api/v4/groups/64/-/packages/maven")
         name = "GitLab"
 
@@ -97,6 +101,9 @@ dependencies {
     compileOnlyApi("de.dytanic.cloudnet:cloudnet-bridge:$CN_VERSION")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
     compileOnlyApi("com.github.azbh111:craftbukkit-1.8.8:R")
+    implementation("de.slikey:EffectLib:3.4-SNAPSHOT")
+    implementation("com.influxdb:influxdb-client-java:2.0.0")
+
 
     // Internal dependencies
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-20210802.152932-14")

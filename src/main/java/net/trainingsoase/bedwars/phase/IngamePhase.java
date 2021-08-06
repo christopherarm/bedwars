@@ -3,8 +3,10 @@ package net.trainingsoase.bedwars.phase;
 import at.rxcki.strigiformes.TranslatedObjectCache;
 import at.rxcki.strigiformes.message.MessageCache;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.github.juliarn.npc.NPC;
 import com.github.juliarn.npc.event.PlayerNPCInteractEvent;
+import com.influxdb.client.WriteApi;
+import com.influxdb.client.domain.WritePrecision;
+import com.influxdb.client.write.Point;
 import de.dytanic.cloudnet.common.collection.Pair;
 import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import net.trainingsoase.api.player.IOasePlayer;
@@ -16,7 +18,6 @@ import net.trainingsoase.bedwars.map.spawner.Spawner;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.bedwars.utils.CombatlogManager;
-import net.trainingsoase.bedwars.utils.ItemBuilder;
 import net.trainingsoase.bedwars.utils.MapUtils;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
@@ -50,6 +51,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.util.Vector;
 import org.github.paperspigot.Title;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +90,9 @@ public class IngamePhase extends TimedPhase implements Listener {
 
     private final TranslatedObjectCache<String> bedDestroyedSubtitle;
 
+    //TODO: Will be included later :)
+    //private final Warppowder warppowder;
+
     public IngamePhase(Game game, boolean async, Bedwars bedwars) {
         super("Ingame", game, 20, async);
         this.bedwars = bedwars;
@@ -98,6 +103,7 @@ public class IngamePhase extends TimedPhase implements Listener {
         this.spawner = new Spawner(bedwars);
         this.npcShop = new NPCShop(bedwars);
         this.breakBlocks = new ArrayList<>();
+        //this.warppowder = new Warppowder(bedwars);
 
         this.bedDestroyedTitle = new TranslatedObjectCache<>(locale ->
                 bedwars.getLanguageProvider().getTextProvider().getString("bed_destroyed_title", locale));
@@ -330,6 +336,11 @@ public class IngamePhase extends TimedPhase implements Listener {
             return;
         }
 
+        /*if(event.getItem().getType() == Material.SULPHUR) {
+            if (this.warppowder.isTeleporting(event.getPlayer())) return;
+            this.warppowder.startTeleport(event.getPlayer());
+        }*/
+
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if(event.getClickedBlock().getType() == Material.ENDER_CHEST) {
                 Player player = event.getPlayer();
@@ -360,6 +371,17 @@ public class IngamePhase extends TimedPhase implements Listener {
     @EventHandler
     public void handleBlockPlace(final BlockPlaceEvent event) {
         breakBlocks.add(event.getBlock());
+
+        Point point = Point.measurement("blocks")
+                .addField("block", 1)
+                .addTag("player", event.getPlayer().getDisplayName())
+                .addTag("type", event.getBlock().getType().toString())
+                .addTag("mode", bedwars.getMode().getMode())
+                .time(System.currentTimeMillis(), WritePrecision.MS);
+
+        try (WriteApi writeApi = bedwars.getInfluxDBClient().getWriteApi()) {
+            writeApi.writePoint("dev", "TrainingsOase", point);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -485,6 +507,15 @@ public class IngamePhase extends TimedPhase implements Listener {
     @EventHandler
     public void handleMove(final PlayerMoveEvent event) {
         final Player player = event.getPlayer();
+
+        Point point = Point.measurement("move")
+                .addField("mode", bedwars.getMode().getMode())
+                .addField("player", player.getDisplayName())
+                .addField("location", player.getLocation().getX());
+
+        try (WriteApi writeApi = bedwars.getInfluxDBClient().getWriteApi()) {
+            writeApi.writePoint("dev", "TrainingsOase", point);
+        }
 
         if(spectatorService.getPlayers().contains(player)) return;
 

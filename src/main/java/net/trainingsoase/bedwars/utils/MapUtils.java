@@ -1,5 +1,7 @@
 package net.trainingsoase.bedwars.utils;
 
+import net.trainingsoase.data.OaseAPIImpl;
+
 import java.util.Map;
 import java.util.Objects;
 
