@@ -349,7 +349,14 @@ public class IngamePhase extends TimedPhase implements Listener {
         }*/
 
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if(event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+
+            if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.BED_BLOCK) {
+                if(!event.getPlayer().isSneaking() || (event.getPlayer().isSneaking() && event.getPlayer().getItemInHand() == null)) {
+                    event.setCancelled(true);
+                }
+            }
+
+            if(event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.ENDER_CHEST) {
                 Player player = event.getPlayer();
                 bedwars.getTeamService().getTeam(player).ifPresent(team -> {
                     event.setCancelled(true);
@@ -358,14 +365,8 @@ public class IngamePhase extends TimedPhase implements Listener {
                 return;
             }
 
-            if(event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
+            if(event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
                 event.getClickedBlock().getWorld().createExplosion(event.getClickedBlock().getLocation(), 4f);
-            }
-
-            if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.BED_BLOCK) {
-                if(!event.getPlayer().isSneaking()) {
-                    event.setCancelled(true);
-                }
             }
         }
     }

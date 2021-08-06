@@ -115,7 +115,6 @@ public enum ShopItems {
             .setDisplayName("§7§lKnockbackstick").build()),
 
     SWORD_GOLD_I(ShopCategory.SWORDS, SpawnType.IRON, 1, 13, new ItemBuilder(Material.GOLD_SWORD)
-            .addEnchantment(Enchantment.DAMAGE_ALL, 1)
             .addEnchantment(Enchantment.DURABILITY, 1)
             .addItemFlag(ItemFlag.HIDE_ATTRIBUTES)
             .setLore(Arrays.asList("", " §8» §f1 Iron"))

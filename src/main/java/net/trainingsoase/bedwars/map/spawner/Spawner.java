@@ -65,7 +65,7 @@ public class Spawner {
         bedwars.runTaskTimer(() -> {
             this.bronze.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, bronze)
                     .setVelocity(new Vector(0, 0, 0)));
-        }, 10L, 10L);
+        }, 15L, 15L);
 
         bedwars.runTaskTimer(() -> {
             this.iron.forEach(loc -> {
@@ -73,7 +73,7 @@ public class Spawner {
                         .setVelocity(new Vector(0, 0, 0));
                 phase.getEffectStorage().playIronSpawn(loc);
             });
-        }, 200L, 200L);
+        }, 20 * 15L, 20 * 15L);
 
 
         if(bedwars.getVoting().getOnVotes().size() > bedwars.getVoting().getOffVotes().size()) {
@@ -83,7 +83,7 @@ public class Spawner {
                         .setVelocity(new Vector(0, 0, 0));
                     phase.getEffectStorage().playGoldSpawn(loc);
                 });
-            }, 600L, 600L);
+            }, 20 * 60L, 20 * 60L);
         }
     }
 }
