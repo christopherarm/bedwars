@@ -1,6 +1,6 @@
 package net.trainingsoase.bedwars.map.shop;
 
-import net.trainingsoase.bedwars.map.SpawnType;
+import net.trainingsoase.bedwars.map.spawner.SpawnType;
 import net.trainingsoase.bedwars.utils.ItemBuilder;
 import net.trainingsoase.oreo.item.builder.LeatherArmorBuilder;
 import net.trainingsoase.oreo.item.builder.PotionBuilder;

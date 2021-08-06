@@ -19,6 +19,7 @@ import net.trainingsoase.bedwars.team.BedwarsTeam;
 import net.trainingsoase.bedwars.utils.ActionbarAPI;
 import net.trainingsoase.bedwars.utils.CombatlogManager;
 import net.trainingsoase.bedwars.utils.MapUtils;
+import net.trainingsoase.bedwars.utils.effects.EffectStorage;
 import net.trainingsoase.data.OaseAPIImpl;
 import net.trainingsoase.hopjes.Game;
 import net.trainingsoase.hopjes.api.phase.TickDirection;
@@ -29,7 +30,10 @@ import net.trainingsoase.oreo.scoreboard.ScoreboardAPI;
 import net.trainingsoase.oreo.util.Locations;
 import net.trainingsoase.oreo.util.Strings;
 import net.trainingsoase.spectator.SpectatorService;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -44,14 +48,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.util.Vector;
 import org.github.paperspigot.Title;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +92,8 @@ public class IngamePhase extends TimedPhase implements Listener {
 
     private final TranslatedObjectCache<String> bedDestroyedSubtitle;
 
+    private final EffectStorage effectStorage;
+
     //TODO: Will be included later :)
     //private final Warppowder warppowder;
 
@@ -103,6 +107,7 @@ public class IngamePhase extends TimedPhase implements Listener {
         this.spawner = new Spawner(bedwars);
         this.npcShop = new NPCShop(bedwars);
         this.breakBlocks = new ArrayList<>();
+        this.effectStorage = new EffectStorage();
         //this.warppowder = new Warppowder(bedwars);
 
         this.bedDestroyedTitle = new TranslatedObjectCache<>(locale ->
@@ -228,6 +233,10 @@ public class IngamePhase extends TimedPhase implements Listener {
 
     public List<Block> getBreakBlocks() {
         return breakBlocks;
+    }
+
+    public EffectStorage getEffectStorage() {
+        return effectStorage;
     }
 
     public void usePlayerBoost(Player player, Player boosted) {

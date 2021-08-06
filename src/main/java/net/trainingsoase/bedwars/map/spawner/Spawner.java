@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.map.GameMap;
 import net.trainingsoase.bedwars.map.MapHelper;
+import net.trainingsoase.bedwars.phase.IngamePhase;
 import net.trainingsoase.oreo.item.builder.ItemBuilder;
 import net.trainingsoase.oreo.location.WrappedLocation;
 import org.bukkit.Bukkit;
@@ -39,7 +40,8 @@ public class Spawner {
     }
 
     public void startSpawners() {
-        GameMap gameMap = MapHelper.getInstance(bedwars).getGameMap();
+        var gameMap = MapHelper.getInstance(bedwars).getGameMap();
+        var phase = ((IngamePhase)bedwars.getLinearPhaseSeries().getCurrentPhase());
 
         for (int i = 0; i < gameMap.getBronzeSpawnerLocations().size(); i++) {
             Location loc = gameMap.getBronzeSpawnerLocations().get(i).toLocation();
@@ -60,18 +62,28 @@ public class Spawner {
         ItemStack iron = new ItemBuilder(Material.IRON_INGOT).setDisplayName("§fIron").build();
         ItemStack gold = new ItemBuilder(Material.GOLD_INGOT).setDisplayName("§6Gold").build();
 
-        bedwars.runTaskTimer(() ->
-                this.bronze.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, bronze)
-                        .setVelocity(new Vector(0, 0, 0))), 10L, 10L);
+        bedwars.runTaskTimer(() -> {
+            this.bronze.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, bronze)
+                    .setVelocity(new Vector(0, 0, 0)));
+        }, 10L, 10L);
 
-        bedwars.runTaskTimer(() ->
-                this.iron.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, iron)
-                        .setVelocity(new Vector(0, 0, 0))), 200L, 200L);
+        bedwars.runTaskTimer(() -> {
+            this.iron.forEach(loc -> {
+                Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, iron)
+                        .setVelocity(new Vector(0, 0, 0));
+                phase.getEffectStorage().playIronSpawn(loc);
+            });
+        }, 200L, 200L);
+
 
         if(bedwars.getVoting().getOnVotes().size() > bedwars.getVoting().getOffVotes().size()) {
-            bedwars.runTaskTimer(() ->
-                    this.gold.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, gold)
-                            .setVelocity(new Vector(0, 0, 0))), 600L, 600L);
+            bedwars.runTaskTimer(() -> {
+                this.gold.forEach(loc -> {
+                    Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, gold)
+                        .setVelocity(new Vector(0, 0, 0));
+                    phase.getEffectStorage().playGoldSpawn(loc);
+                });
+            }, 600L, 600L);
         }
     }
 }

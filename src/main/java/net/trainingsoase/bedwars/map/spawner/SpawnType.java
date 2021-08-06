@@ -1,4 +1,4 @@
-package net.trainingsoase.bedwars.map;
+package net.trainingsoase.bedwars.map.spawner;
 
 import org.bukkit.Material;
 

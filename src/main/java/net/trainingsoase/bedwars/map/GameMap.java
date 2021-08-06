@@ -1,7 +1,7 @@
 package net.trainingsoase.bedwars.map;
 
 import com.google.gson.Gson;
-import net.trainingsoase.bedwars.utils.Mode;
+import net.trainingsoase.bedwars.map.spawner.SpawnType;
 import net.trainingsoase.hopjes.api.map.BaseMap;
 import net.trainingsoase.oreo.location.WrappedLocation;
 import org.bukkit.Location;
