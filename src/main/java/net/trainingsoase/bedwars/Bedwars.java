@@ -114,8 +114,6 @@ public class Bedwars extends Game {
         languageProvider = new LanguageProvider<>(getClassLoader(), "bedwars", new BukkitSender(this), Locale.GERMAN, Locale.ENGLISH);
 
         String token = "iMy5plQB3fS19BXCLn6C8DFOh5BIROZo8naUMNNOM2-utgKu2-3Lk2-nXqCGsY1sx-rRUt6kN0eWAMHzQF8Y0g==";
-        String bucket = "dev";
-        String org = "TrainingsOase";
 
         influxDBClient = InfluxDBClientFactory.create("http://185.117.0.168:8086", token.toCharArray());
 
@@ -143,17 +141,6 @@ public class Bedwars extends Game {
         voting = new Voting(this);
         shop = new Shop(this);
         slimeManager = new SlimeManager(this);
-
-        Point point = Point
-                .measurement("game")
-                .addField("gameid", "gameid:)")
-                .addField("bronze", 10)
-                .addField("iron", 20)
-                .time(Instant.now(), WritePrecision.NS);
-
-        try (WriteApi writeApi = influxDBClient.getWriteApi()) {
-            writeApi.writePoint(bucket, org, point);
-        }
     }
 
     @Override
