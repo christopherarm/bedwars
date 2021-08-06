@@ -123,14 +123,12 @@ public class IngamePhase extends TimedPhase implements Listener {
     public void onStart() {
         super.onStart();
 
+        spawner.startSpawners();
+        npcShop.spawnNPCs();
+
         this.spectatorService.owningPlugin(bedwars).useChat().useItems(InventoryRows.ONE).useSpectatorLocation(MapHelper.getInstance(bedwars).getGameMap().getSpawn());
         this.combatlogManager = new CombatlogManager(bedwars);
         bedwars.getServer().getPluginManager().registerEvents(new TNTSheepListener(bedwars), bedwars);
-
-        Bukkit.getScheduler().runTaskLater(bedwars, () -> {
-            spawner.startSpawners();
-            npcShop.spawnNPCs();
-        }, 5);
 
         String gold = bedwars.getVoting().getOnVotes().size() > bedwars.getVoting().getOffVotes().size() ? "item_on" : "item_off";
 
@@ -317,7 +315,7 @@ public class IngamePhase extends TimedPhase implements Listener {
 
             event.setCancelled(true);
 
-            final Player player = (Player) event.getPlayer();
+            final Player player = event.getPlayer();
             final Player boosted = (Player) event.getRightClicked();
 
             Optional<BedwarsTeam> playerTeam = bedwars.getTeamService().getTeam(player);

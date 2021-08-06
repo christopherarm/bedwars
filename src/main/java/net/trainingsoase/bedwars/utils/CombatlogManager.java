@@ -25,9 +25,7 @@ public class CombatlogManager {
             for (Player player : this.combatLogMap.keySet()) {
                 Pair<Integer, Player> playerPair = this.combatLogMap.get(player);
                 if (playerPair.getFirst() >= 1) {
-                    Pair<Integer, Player> newPair = new Pair(playerPair.getFirst() - 1, playerPair.getSecond());
-                    this.combatLogMap.remove(player);
-                    this.combatLogMap.put(player, newPair);
+                    playerPair.setFirst(playerPair.getFirst() - 1);
                     continue;
                 }
                 if (playerPair.getFirst() == 0)
