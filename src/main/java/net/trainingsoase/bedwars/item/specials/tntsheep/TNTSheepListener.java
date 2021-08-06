@@ -42,17 +42,18 @@ public class TNTSheepListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onDamageEntity(EntityDamageByEntityEvent event) {
+    public void onDamageEntity(final EntityDamageByEntityEvent event) {
         if(event.getEntity() instanceof ITNTSheep || event.getEntity() instanceof Sheep) {
-            if (event.getCause().equals(EntityDamageEvent.DamageCause.CUSTOM) || event.getCause().equals(EntityDamageEvent.DamageCause.VOID)
-                    || event.getCause().equals(EntityDamageEvent.DamageCause.FALL) || event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
-                event.setDamage(0.0);
-                event.setCancelled(true);
-            }
+            event.setDamage(0.0);
+            event.setCancelled(true);
+        }
+    }
 
-            if (event.getEntity() instanceof ITNTSheep || event.getEntity() instanceof Sheep) {
-                event.setDamage(0.0);
-            }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void handleEntityDamage(final EntityDamageEvent event) {
+        if(event.getEntity() instanceof ITNTSheep || event.getEntity() instanceof Sheep) {
+            event.setDamage(0.0);
+            event.setCancelled(true);
         }
     }
 

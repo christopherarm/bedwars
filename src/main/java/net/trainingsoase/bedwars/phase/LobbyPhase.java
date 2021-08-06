@@ -163,20 +163,20 @@ public class LobbyPhase extends TimedPhase implements Listener {
         if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         if(event.getItem().getItemMeta().getDisplayName().equals(
-                bedwars.getLanguageProvider().getTextProvider().getString("item_teamselector", oasePlayer.getLocale()))) {
+                joinItems.getTeamSelectionItem().get(oasePlayer.getLocale()).getItemMeta().getDisplayName())) {
             player.openInventory(bedwars.getTeamselector().getTeamSelectorInventory(oasePlayer.getLocale()));
 
         } else if(event.getItem().getItemMeta().getDisplayName().equals(
-                bedwars.getLanguageProvider().getTextProvider().getString("item_lobby", oasePlayer.getLocale()))) {
+                joinItems.getLobbyItem().get(oasePlayer.getLocale()).getItemMeta().getDisplayName())) {
             PLAYER_MANAGER.getOnlinePlayerAsync(player.getUniqueId()).onComplete(iCloudPlayer ->
                     iCloudPlayer.getPlayerExecutor().connectToFallback());
 
         } else if(event.getItem().getItemMeta().getDisplayName().equals(
-                bedwars.getLanguageProvider().getTextProvider().getString("item_mapvoting", oasePlayer.getLocale()))) {
+                joinItems.getMapVotingItem().get(oasePlayer.getLocale()).getItemMeta().getDisplayName())) {
             player.openInventory(bedwars.getMapvoting().getMapVotingInventory(oasePlayer.getLocale()));
 
         } else if(event.getItem().getItemMeta().getDisplayName().equals(
-                bedwars.getLanguageProvider().getTextProvider().getString("item_voting", oasePlayer.getLocale()))) {
+                joinItems.getVotingItem().get(oasePlayer.getLocale()).getItemMeta().getDisplayName())) {
             player.openInventory(bedwars.getVoting().getVotingInventory(oasePlayer.getLocale()));
         }
     }

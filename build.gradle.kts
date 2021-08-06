@@ -108,9 +108,10 @@ dependencies {
     // Internal dependencies
     compileOnlyApi("net.trainingsoase:OaseAPI-Spigot:0.0.0-20210802.152932-14")
     compileOnlyApi("net.trainingsoase:Hopjes:1.0.0-20210801.171404-4")
-    compileOnlyApi("net.trainingsoase:Oreo:1.0.0-20210802.151000-6")
     compileOnlyApi("net.trainingsoase:spectator:0.0.0-SNAPSHOT")
     implementation("com.github.juliarn:npc-lib:2.6-RELEASE")
+    compileOnlyApi("net.trainingsoase:Oreo:1.0.0-20210806.181437-8")
+
 
     // Testing dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")

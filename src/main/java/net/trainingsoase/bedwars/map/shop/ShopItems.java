@@ -186,20 +186,21 @@ public enum ShopItems {
             .setLore(Arrays.asList("", " §8» §f5 Iron"))
             .setDisplayName("§7§lPotion of Healing §8- §eLevel II").build()),
 
-    POTIONS_SWIFTNESS(ShopCategory.POTIONS, SpawnType.IRON, 7, 12, new PotionBuilder()
-            .setType(PotionType.SPEED)
+    POTIONS_SWIFTNESS(ShopCategory.POTIONS, SpawnType.IRON, 7, 12, new PotionBuilder(PotionType.SPEED)
             .setSplash(false)
-            .addEffect(new PotionEffect(PotionEffectType.SPEED, 20*90, 1, true, true))
+            .addEffect(new PotionEffect(PotionEffectType.SPEED, 20*90, 0, true, true))
             .setLore(Arrays.asList("", " §8» §f7 Iron"))
             .setDisplayName("§7§lPotion of Swiftness").build()),
 
-    POTIONS_LEAPING(ShopCategory.POTIONS, SpawnType.IRON, 16, 13, new ItemBuilder(Material.POTION)
-            .setData((short) 8203)
-            .setLore(Arrays.asList("", " §8» §f16 Iron"))
+    POTIONS_LEAPING(ShopCategory.POTIONS, SpawnType.IRON, 8, 13, new PotionBuilder(PotionType.JUMP)
+            .setSplash(false)
+            .addEffect(new PotionEffect(PotionEffectType.JUMP, 20*90, 1, true, true))
+            .setLore(Arrays.asList("", " §8» §f8 Iron"))
             .setDisplayName("§7§lPotion of Leaping").build()),
 
-    POTIONS_INVISIBILITY(ShopCategory.POTIONS, SpawnType.IRON, 32, 14, new ItemBuilder(Material.POTION)
-            .setData((short) 8238)
+    POTIONS_INVISIBILITY(ShopCategory.POTIONS, SpawnType.IRON, 32, 14, new PotionBuilder(PotionType.INVISIBILITY)
+            .setSplash(false)
+            .addEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*30, 0, true, true))
             .setLore(Arrays.asList("", " §8» §f32 Iron"))
             .setDisplayName("§7§lPotion of Invisibility").build()),
 
