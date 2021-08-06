@@ -5,6 +5,7 @@ import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import net.trainingsoase.api.player.IOasePlayer;
 import net.trainingsoase.bedwars.Bedwars;
 import net.trainingsoase.bedwars.commands.StartCommand;
+import net.trainingsoase.bedwars.inventory.Mapvoting;
 import net.trainingsoase.bedwars.item.JoinItems;
 import net.trainingsoase.bedwars.map.MapHelper;
 import net.trainingsoase.bedwars.team.BedwarsTeam;
@@ -20,6 +21,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.List;
 
 /**
  * @author byCrypex
@@ -66,7 +69,25 @@ public class LobbyPhase extends TimedPhase implements Listener {
     }
 
     public void sendJoinMessage() {
+        List<IOasePlayer> currentOnlinePlayers = OaseAPIImpl.INSTANCE.getPlayerExecutor().getCurrentOnlinePlayers();
 
+        StringBuilder builders = new StringBuilder();
+        for(String builder : MapHelper.getInstance(bedwars).getGameMap().getBuilders()) {
+            builders.append(builder + ",");
+        }
+
+        String gold = bedwars.getVoting().getOnVotes().size() > bedwars.getVoting().getOffVotes().size() ? "item_on" : "item_off";
+
+        for (IOasePlayer oasePlayer : currentOnlinePlayers) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("\n ").append(bedwars.getLanguageProvider().getTextProvider().getString("voting_end", oasePlayer.getLocale()))
+                    .append("\n §8「§7§lMap: §e").append(bedwars.getMapvoting().getPlayedMap())
+                    .append("\n §8「§7§lBuilder: §e").append(builders.substring(0, builders.length() - 1))
+                    .append("\n §8「§7§lGold: ").append(bedwars.getLanguageProvider().getTextProvider().format(gold, oasePlayer.getLocale()))
+                    .append("\n ");
+
+            Bukkit.getPlayer(oasePlayer.getUUID()).sendMessage(builder.toString());
+        }
     }
 
     @Override
@@ -77,6 +98,7 @@ public class LobbyPhase extends TimedPhase implements Listener {
     @Override
     protected void onFinish() {
         this.removePhaseListener(this);
+        sendJoinMessage();
     }
 
     @Override
