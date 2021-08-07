@@ -65,7 +65,7 @@ public class Spawner {
         bedwars.runTaskTimer(() -> {
             this.bronze.forEach(loc -> Bukkit.getWorld((loc).getWorld().getName()).dropItem(loc, bronze)
                     .setVelocity(new Vector(0, 0, 0)));
-        }, 15L, 15L);
+        }, 13L, 13L);
 
         bedwars.runTaskTimer(() -> {
             this.iron.forEach(loc -> {

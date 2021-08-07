@@ -51,6 +51,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 import org.github.paperspigot.Title;
 
@@ -331,29 +332,24 @@ public class IngamePhase extends TimedPhase implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void handleInteract(final PlayerInteractEvent event) {
-        if(event.getItem().getType() == Material.FIREWORK) {
+        if(event.getItem() != null && event.getItem().getType() == Material.FIREWORK) {
             event.setCancelled(true);
             return;
         }
 
-        if(event.getItem().getType() == Material.BLAZE_ROD) {
+        if(event.getItem() != null && event.getItem().getType() == Material.BLAZE_ROD) {
             useRescuePlatform(event.getPlayer());
             return;
         }
 
-        /*if(event.getItem().getType() == Material.SULPHUR) {
-            if (this.warppowder.isTeleporting(event.getPlayer())) return;
-            this.warppowder.startTeleport(event.getPlayer());
-        }*/
-
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
             if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.BED_BLOCK) {
                 if(!event.getPlayer().isSneaking() || (event.getPlayer().isSneaking() && event.getPlayer().getItemInHand() == null)) {
                     event.setCancelled(true);
                 }
+                return;
             }
 
             if(event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.ENDER_CHEST) {
@@ -398,6 +394,12 @@ public class IngamePhase extends TimedPhase implements Listener {
         final IOasePlayer oasePlayer = OaseAPIImpl.INSTANCE.getPlayerExecutor().getOnlinePlayer(player.getUniqueId());
 
         if(event.getBlock().getType() != Material.BED_BLOCK) {
+            if(event.getBlock().getType() == Material.WEB) {
+                event.setCancelled(true);
+                event.getBlock().setType(Material.AIR);
+                return;
+            }
+
             if(!breakBlocks.contains(event.getBlock())) {
                 event.setCancelled(true);
             }
